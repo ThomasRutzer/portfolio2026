@@ -1,0 +1,24 @@
+---
+import CaseTabs from "@components/CaseTabs.astro";
+import FocusAreas from "@components/FocusAreas.astro";
+import Hero from "@components/Hero.astro";
+import Waveform from "@components/Waveform.astro";
+import Layout from "@layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const cases = await getCollection("cases");
+---
+
+<Layout title="Home Page">
+  <Hero />
+  <div class="container">
+    <Waveform labels={[{ position: 0.25, text: "Intro" }, { position: 0.6, text: "Drop" }, { position: 0.85, text: "Outro" }]} />
+  </div>
+
+  {cases.length > 0 && (
+    <section class="container">
+      <CaseTabs cases={cases} />
+    </section>
+  )}
+  <FocusAreas />
+</Layout>

@@ -1,0 +1,226 @@
+---
+interface Label {
+  /** 0–1, position along the waveform width */
+  position: number;
+  text: string;
+}
+
+interface Props {
+  labels?: Label[];
+  variant?: "purple" | "yellow";
+}
+
+const { labels = [], variant = "purple" } = Astro.props;
+
+// Generate a waveform path that is active in the middle and flat at the ends.
+// The SVG viewBox is 0 0 800 80; the waveline sits on y=40 (centre).
+const W = 800;
+const H = 80;
+const CY = H / 2;
+
+// Amplitude envelope: bell curve so edges are flat.
+// amp(x) = maxAmp * exp(-((x/W - 0.5)^2) / (2 * sigma^2))
+const MAX_AMP = 28;
+const SIGMA = 0.18;
+function envelope(x: number): number {
+  const t = x / W - 0.5;
+  return MAX_AMP * Math.exp(-(t * t) / (2 * SIGMA * SIGMA));
+}
+
+// Pseudo-random but deterministic noise via a seeded LCG so the SVG is stable.
+function lcg(seed: number) {
+  let s = seed;
+  return () => {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    return (s >>> 0) / 0xffffffff;
+  };
+}
+const rand = lcg(42);
+
+// Build the path using cubic bezier segments.
+const SEGMENTS = 40;
+const step = W / SEGMENTS;
+
+// Sample y-values at each knot.
+const ys: number[] = Array.from({ length: SEGMENTS + 1 }, (_, i) => {
+  const x = i * step;
+  const amp = envelope(x);
+  // Ensure alternating direction for a natural waveform feel.
+  const sign = i % 2 === 0 ? 1 : -1;
+  const jitter = 0.5 + rand() * 0.5; // 0.5–1.0
+  return CY + sign * amp * jitter;
+});
+
+// Smooth the segment ends using Catmull-Rom → cubic bezier conversion.
+function catmullToBezier(
+  p0: number,
+  p1: number,
+  p2: number,
+  p3: number,
+  t = 0.5
+) {
+  const cp1 = p1 + (p2 - p0) * t;
+  const cp2 = p2 - (p3 - p1) * t;
+  return [cp1, cp2] as const;
+}
+
+let d = `M 0 ${CY}`;
+for (let i = 0; i < SEGMENTS; i++) {
+  const x0 = (i - 1) * step;
+  const x1 = i * step;
+  const x2 = (i + 1) * step;
+  const x3 = (i + 2) * step;
+
+  const y0 = ys[Math.max(0, i - 1)];
+  const y1 = ys[i];
+  const y2 = ys[i + 1];
+  const y3 = ys[Math.min(SEGMENTS, i + 2)];
+
+  const [cp1y, cp2y] = catmullToBezier(y0, y1, y2, y3);
+  const cp1x = x1 + (x2 - x0) * 0.5;
+  const cp2x = x2 - (x3 - x1) * 0.5;
+
+  d += ` C ${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+}
+
+// Map label positions to actual SVG x coords and interpolate y.
+function yAtX(x: number): number {
+  const i = Math.min(Math.floor(x / step), SEGMENTS - 1);
+  const t = (x - i * step) / step;
+  return ys[i] * (1 - t) + ys[i + 1] * t;
+}
+
+const labelPoints = labels.map((l, i) => {
+  const x = l.position * W;
+  const y = yAtX(x);
+  const id = `wf-label-${i}`;
+  return { ...l, x, y, id };
+});
+---
+
+<div class="waveform" data-variant={variant}>
+  <svg
+    viewBox={`0 0 ${W} ${H}`}
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <defs>
+      <linearGradient id="wf-fade" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0%" stop-color="currentColor" stop-opacity="0" />
+        <stop offset="12%" stop-color="currentColor" stop-opacity="1" />
+        <stop offset="88%" stop-color="currentColor" stop-opacity="1" />
+        <stop offset="100%" stop-color="currentColor" stop-opacity="0" />
+      </linearGradient>
+      <mask id="wf-mask">
+        <rect width={W} height={H} fill="url(#wf-fade)" />
+      </mask>
+    </defs>
+
+    <path
+      d={d}
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      mask="url(#wf-mask)"
+    />
+
+  </svg>
+
+  {labelPoints.map(({ x, y, id, text }) => (
+    <span
+      class="label-dot"
+      style={`--dx: ${(x / W) * 100}%; --dy: ${(y / H) * 100}%`}
+      popovertarget={id}
+      aria-haspopup="true"
+      aria-label={text}
+      tabindex="0"
+      role="button"
+    />
+  ))}
+
+  {labelPoints.map(({ id, text }) => (
+    <div id={id} popover="manual" class="label-popover">
+      {text}
+    </div>
+  ))}
+</div>
+
+<script>
+  document.querySelectorAll<HTMLSpanElement>(".waveform .label-dot").forEach((dot) => {
+    const targetId = dot.getAttribute("popovertarget")!;
+    const popover = document.getElementById(targetId) as HTMLElement & {
+      showPopover(): void;
+      hidePopover(): void;
+    };
+    if (!popover) return;
+
+    function show() {
+      popover.showPopover({ source: dot });
+    }
+
+    dot.addEventListener("mouseenter", show);
+    dot.addEventListener("mouseleave", () => popover.hidePopover());
+    dot.addEventListener("focus", show);
+    dot.addEventListener("blur", () => popover.hidePopover());
+  });
+</script>
+
+<style>
+  .waveform {
+    position: relative;
+    width: 100%;
+    color: var(--color-p100);
+
+    &[data-variant="yellow"] {
+      color: var(--color-y100);
+    }
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .label-dot {
+    position: absolute;
+    left: var(--dx);
+    top: var(--dy);
+    translate: -50% -50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    cursor: pointer;
+    transition: scale 150ms ease;
+
+    &:hover,
+    &:focus {
+      scale: 1.5;
+      outline: none;
+    }
+  }
+
+  .label-popover {
+    /* Remove default centered positioning so anchor rules take over */
+    margin: unset;
+    inset: unset;
+    /* CSS Anchor Positioning — Chrome 125+ */
+    bottom: calc(anchor(top) + 8px);
+    left: anchor(center);
+    translate: -50% 0;
+    padding: 0.25rem 0.625rem;
+    background: var(--color-panel);
+    color: var(--color-ui);
+    font-family: var(--font-main);
+    font-size: var(--font-step-0);
+    border: 1px solid var(--color-muted);
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    width: max-content;
+  }
+</style>

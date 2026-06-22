@@ -1,0 +1,21 @@
+{
+  "title": "Example Case Study",
+  "description": "This is an example case study demonstrating the JSON data collection structure.",
+  "date": "2026-01-15",
+  "tags": [
+    { "label": "Audio Engineering", "type": "engineering" },
+    { "label": "Creative Coding", "type": "engineering" },
+    { "label": "Web Audio API", "type": "architecture" },
+    { "label": "Keyboard-First", "type": "architecture" },
+    { "label": "Accessibility", "type": "architecture" }
+  ],
+  "featured": false,
+  "image": "https://example.com/image.jpg",
+  "status": "unmatched",
+  "metrics": [
+    { "label": "Completion", "value": "47%", "progress": 47 },
+    { "label": "Test Coverage", "value": "61%", "progress": 61 },
+    { "label": "Performance Score", "value": "73%", "progress": 73 },
+    { "label": "Satisfaction Rate", "value": "85%", "progress": 85 }
+  ]
+}

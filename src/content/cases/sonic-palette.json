@@ -1,0 +1,21 @@
+{
+  "title": "Sonic Palette",
+  "description": "A browser-based instrument builder that maps color values to synthesizer parameters — built for a Berlin sound-art collective. Designed around the constraint that every interaction must work without a mouse.",
+  "date": "2025-11-03",
+  "tags": [
+    { "label": "Audio Engineering", "type": "engineering" },
+    { "label": "Creative Coding", "type": "engineering" },
+    { "label": "Web Audio API", "type": "architecture" },
+    { "label": "Keyboard-First", "type": "architecture" },
+    { "label": "Accessibility", "type": "architecture" }
+  ],
+  "featured": true,
+  "image": "/images/cases/sonic-palette.jpg",
+  "link": "https://sonic-palette.example.com",
+  "metrics": [
+    { "label": "Keyboard Coverage", "value": "100%", "progress": 100 },
+    { "label": "Browser Compatibility", "value": "94%", "progress": 94 },
+    { "label": "Accessibility Score", "value": "91%", "progress": 91 },
+    { "label": "Latency Target Met", "value": "88%", "progress": 88 }
+  ]
+}
