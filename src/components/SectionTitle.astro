@@ -1,0 +1,40 @@
+---
+import type { HTMLTag } from "astro/types";
+import Signal from "./Signal.astro";
+
+interface Props {
+  tag?: HTMLTag;
+  class?: string;
+  id?: string;
+  signalVariant?: "purple" | "yellow";
+  [key: string]: any;
+}
+
+const {
+  tag: Tag = "h2",
+  class: className = "",
+  id,
+  signalVariant,
+  ...rest
+} = Astro.props as Props;
+---
+
+<Tag {id} class={`section-title ${className}`.trim()} {...rest}>
+  <Signal variant={signalVariant} />
+  <slot />
+</Tag>
+
+<style>
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    font-family: var(--font-main);
+    font-size: var(--font-step-0);
+    padding-bottom: var(--space-m);
+    padding-top: var(--space-m);
+    color: var(--color-body);
+    font-weight: normal;
+    text-transform: uppercase;
+  }
+</style>

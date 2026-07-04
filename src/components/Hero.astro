@@ -1,0 +1,146 @@
+---
+import Grid from "./Grid.astro";
+import GridItem from "./GridItem.astro";
+import SectionTitle from "./SectionTitle.astro";
+---
+
+<div class="container">
+  <Grid class="top-line">
+    <GridItem span={{ base: 2, sm: 2, md: 2 }}>
+      <SectionTitle>Intro</SectionTitle>
+    </GridItem>
+    <GridItem span={{ base: 2, sm: 2, md: 1 }} justify="center" align="start">
+      <span class="initials">T R</span>
+    </GridItem>
+    <GridItem span={{ base: 2, sm: 2, md: 3 }} justify="end" align="center">
+      <p class="location">50.93825° N, 6.89799° E</p>
+    </GridItem>
+  </Grid>
+</div>
+<h1 data-hero-title class="container-narrow">
+  Hej, I'm <span class="name">Thomas</span>. I architect & engineer <span
+    class="highlight">unique interfaces & interactions</span
+  > for the browser platform.
+</h1>
+
+<noscript>
+  <style>
+    [data-hero-title] .name,
+    [data-hero-title] .highlight {
+      color: var(--color-ui) !important;
+      -webkit-text-stroke: 0 !important;
+    }
+    [data-hero-title] .name {
+      color: var(--color-p100) !important;
+    }
+    [data-hero-title] .highlight {
+      color: var(--color-y100) !important;
+    }
+  </style>
+</noscript>
+
+<style>
+  .top-line {
+    color: var(--color-body);
+    font-family: var(--font-main);
+    font-size: var(--font-step-0);
+    margin-bottom: var(--space-m);
+  }
+
+  .initials {
+    text-transform: uppercase;
+    padding-bottom: var(--space-m);
+    padding-top: var(--space-m);
+    display: inline-block;
+  }
+
+  .location {
+    padding-bottom: var(--space-m);
+    padding-top: var(--space-m);
+  }
+
+  h1 {
+    --stroke-width: 0.01em;
+    --stroke-opacity: 10%;
+    font-family: var(--font-title);
+    font-size: var(--font-step-4);
+    text-transform: uppercase;
+  }
+
+  .name {
+    color: transparent;
+    -webkit-text-stroke: var(--stroke-width)
+      color-mix(in srgb, var(--color-p100) var(--stroke-opacity), transparent);
+    white-space: nowrap;
+  }
+
+  .highlight {
+    color: transparent;
+    -webkit-text-stroke: var(--stroke-width)
+      color-mix(in srgb, var(--color-y100) var(--stroke-opacity), transparent);
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { SplitText } from "gsap/SplitText";
+
+  gsap.registerPlugin(SplitText);
+
+  const heading = document.querySelector<HTMLElement>("[data-hero-title]");
+  const nameEl = heading?.querySelector<HTMLElement>(".name");
+  const highlightEl = heading?.querySelector<HTMLElement>(".highlight");
+
+  if (nameEl && highlightEl) {
+    const rootStyles = getComputedStyle(document.documentElement);
+    const colors = {
+      name: rootStyles.getPropertyValue("--color-p100").trim(),
+      highlight: rootStyles.getPropertyValue("--color-y100").trim(),
+    };
+
+    const nameSplit = SplitText.create(nameEl, { type: "chars", aria: "auto" });
+    const highlightSplit = SplitText.create(highlightEl, {
+      type: "chars",
+      aria: "auto",
+    });
+
+    const mm = gsap.matchMedia();
+
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap
+        .timeline({ delay: 0.2, defaults: { duration: 2, ease: "sine.inOut" } })
+        .to(
+          nameSplit.chars,
+          {
+            color: colors.name,
+            keyframes: {
+              filter: ["blur(0px)", "blur(2px)", "blur(0px)"],
+              easeEach: "sine.inOut",
+            },
+            stagger: { each: 0.05, ease: "sine.inOut" },
+          },
+          0,
+        )
+        .to(
+          highlightSplit.chars,
+          {
+            color: colors.highlight,
+            keyframes: {
+              filter: ["blur(0px)", "blur(2px)", "blur(0px)"],
+              easeEach: "sine.inOut",
+            },
+            stagger: { each: 0.05, ease: "sine.inOut" },
+          },
+          0.4,
+        );
+    });
+
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      gsap.set(nameSplit.chars, { color: colors.name, filter: "blur(0px)" });
+      gsap.set(highlightSplit.chars, {
+        color: colors.highlight,
+        filter: "blur(0px)",
+      });
+    });
+  }
+</script>

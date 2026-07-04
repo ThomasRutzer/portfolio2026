@@ -6,12 +6,12 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.local(),
-      name: "PPNeueMachinaInktrap",
+      name: "PPNeueMachina",
       cssVariable: "--font-title",
       options: {
         variants: [
           {
-            src: ["./src/assets/fonts/PPNeueMachina-InktrapUltrabold.otf"],
+            src: ["./src/assets/fonts/PPNeueMachina-PlainUltrabold.otf"],
             weight: "normal",
             style: "normal",
           },

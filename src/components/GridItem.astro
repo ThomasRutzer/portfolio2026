@@ -1,0 +1,61 @@
+---
+import type { HTMLTag } from "astro/types";
+
+type Span = number | { base?: number; sm?: number; md?: number };
+type SelfAlign = "start" | "center" | "end" | "stretch";
+
+interface Props {
+  tag?: HTMLTag;
+  span?: Span;
+  justify?: SelfAlign;
+  align?: SelfAlign;
+  class?: string;
+  [key: string]: any;
+}
+
+const {
+  tag: Tag = "div",
+  span = 1,
+  justify,
+  align,
+  class: className = "",
+  ...rest
+} = Astro.props as Props;
+
+const spans = typeof span === "number" ? { base: span } : span;
+const { base = 1, sm = base, md = sm } = spans;
+
+const vars = [
+  `--item-span-base: ${base}`,
+  `--item-span-sm: ${sm}`,
+  `--item-span-md: ${md}`,
+  justify ? `--item-justify: ${justify}` : "",
+  align ? `--item-align: ${align}` : "",
+]
+  .filter(Boolean)
+  .join("; ");
+---
+
+<Tag class={`grid-item ${className}`.trim()} style={vars} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .grid-item {
+    grid-column: span var(--item-span-base);
+    justify-self: var(--item-justify, stretch);
+    align-self: var(--item-align, stretch);
+  }
+
+  @container grid (min-width: 600px) {
+    .grid-item {
+      grid-column: span var(--item-span-sm);
+    }
+  }
+
+  @container grid (min-width: 900px) {
+    .grid-item {
+      grid-column: span var(--item-span-md);
+    }
+  }
+</style>

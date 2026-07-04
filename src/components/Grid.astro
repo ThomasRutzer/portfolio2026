@@ -1,0 +1,31 @@
+---
+import type { HTMLTag } from "astro/types";
+
+interface Props {
+  tag?: HTMLTag;
+  gap?: string;
+  class?: string;
+  [key: string]: any;
+}
+
+const {
+  tag: Tag = "div",
+  gap = "var(--space-l)",
+  class: className = "",
+  ...rest
+} = Astro.props as Props;
+---
+
+<Tag class={`grid ${className}`.trim()} style={`--grid-gap: ${gap}`} {...rest}>
+  <slot />
+</Tag>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--grid-gap);
+    container-type: inline-size;
+    container-name: grid;
+  }
+</style>
