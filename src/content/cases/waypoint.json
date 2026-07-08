@@ -9,7 +9,6 @@
     { "label": "Logistics System", "type": "architecture" },
     { "label": "SSG", "type": "architecture" }
   ],
-  "featured": false,
   "icon": "twin",
   "image": "/images/cases/waypoint.jpg",
   "metrics": [

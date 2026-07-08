@@ -1,0 +1,537 @@
+---
+import Signal from "@components/Signal.astro";
+import CaseIcon from "@components/CaseIcon.astro";
+import CaseStats from "@components/CaseStats.astro";
+import CaseStatus from "@components/CaseStatus.astro";
+import CaseTags from "@components/CaseTags.astro";
+import type { CollectionEntry } from "astro:content";
+import Progress from "./Progress.astro";
+
+interface Props {
+  cases: CollectionEntry<"cases">[];
+}
+
+const { cases } = Astro.props;
+---
+
+<div>
+  <div role="tablist" aria-label="Case studies">
+    {
+      cases.map((c, i) => (
+        <button
+          role="tab"
+          id={`tab-${c.id}`}
+          aria-controls={`panel-${c.id}`}
+          aria-selected={i === 0 ? "true" : "false"}
+          tabindex={i === 0 ? 0 : -1}
+        >
+          <header>
+            <CaseIcon icon={c.data.icon} />
+            <h2>{c.data.title}</h2>
+          </header>
+
+          <footer aria-hidden="true">
+            <i class="jack" />
+            <span>Out</span>
+          </footer>
+        </button>
+      ))
+    }
+  </div>
+
+  <svg class="cable-layer" aria-hidden="true">
+    <path class="cable"></path>
+  </svg>
+  <div class="plug" aria-hidden="true"></div>
+
+  {
+    cases.map((c, i) => (
+      <section
+        role="tabpanel"
+        id={`panel-${c.id}`}
+        aria-labelledby={`tab-${c.id}`}
+        hidden={i !== 0}
+        class="container-narrow"
+      >
+        <div class="input-jack" aria-hidden="true" />
+        <h3>{c.data.title}</h3>
+        <div>
+          {c.data.description && <p>{c.data.description}</p>}
+          {c.data.stats && <CaseStats stats={c.data.stats} />}
+        </div>
+        {/* <aside aria-hidden="true">
+            {c.data.status && <CaseStatus status={c.data.status} />}
+            {c.data.metrics && (
+              <div>
+                {c.data.metrics.map((m) => (
+                  <Progress
+                    label={m.label}
+                    value={m.value}
+                    progress={m.progress}
+                  />
+                ))}
+              </div>
+            )}
+          </aside>
+        </div> */}
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  div:has(> [role="tablist"]) {
+    position: relative;
+    container-type: inline-size;
+    container-name: tablist;
+  }
+
+  [role="tablist"] {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    @container tablist (min-width: 900px) {
+      gap: var(--space-m);
+    }
+  }
+
+  button[role="tab"] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--space-xs);
+    padding: var(--space-m);
+    background: var(--color-panel);
+    border: 1px solid var(--color-muted);
+    border-right: none;
+    text-align: left;
+    cursor: pointer;
+    color: inherit;
+
+    &:first-child {
+      border-radius: var(--border-radius-s) 0 0 var(--border-radius-s);
+    }
+
+    &:last-child {
+      border-right: 1px solid var(--color-muted);
+      border-radius: 0 var(--border-radius-s) var(--border-radius-s) 0;
+    }
+
+    @container tablist (min-width: 900px) {
+      border-radius: var(--border-radius-s);
+      border-right: 1px solid var(--color-muted);
+    }
+
+    &:not([aria-selected="true"]) header > span {
+      opacity: 0;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+
+      @container tablist (min-width: 900px) {
+        flex-direction: row;
+      }
+    }
+
+    h2 {
+      font-family: var(--font-main);
+      font-size: var(--font-step-1);
+      color: var(--color-body);
+    }
+
+    footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: absolute;
+      left: 25%;
+      bottom: -10px;
+      transform: translateX(-50%) translateY(50%);
+
+      i {
+        display: block;
+        width: 12px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: 1px solid var(--color-muted);
+        background: var(--color-bg);
+      }
+
+      span {
+        font-family: var(--font-main);
+        font-size: var(--font-step-0);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--color-body);
+      }
+    }
+
+    &[aria-selected="true"] footer i {
+      border-color: var(--color-p100);
+      background: var(--color-p100);
+    }
+
+    &.cable-target footer i {
+      border-color: var(--color-y100);
+      box-shadow: 0 0 0 4px
+        color-mix(in srgb, var(--color-y100) 30%, transparent);
+    }
+  }
+
+  .cable-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .cable {
+    fill: none;
+    stroke: var(--color-body);
+    stroke-width: 4;
+  }
+
+  .plug {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--color-body);
+    border: 3px solid var(--color-bg);
+    box-shadow: 0 0 0 1px var(--color-body);
+    cursor: grab;
+    touch-action: none;
+    pointer-events: auto;
+    opacity: 0;
+    z-index: 3;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  .input-jack {
+    position: relative;
+    display: block;
+    margin: var(--space-2xs) auto 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--color-body);
+    background: var(--color-bg);
+    z-index: 1;
+  }
+
+  section[role="tabpanel"] {
+    margin-top: var(--space-2xl-3xl);
+
+    &[hidden] {
+      display: none;
+    }
+
+    h3 {
+      font-family: var(--font-title);
+      font-size: var(--font-step-2);
+      max-width: 8ch;
+      color: var(--color-p100);
+
+      &::first-line {
+        color: var(--color-ui);
+      }
+    }
+
+    & > div {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-m);
+    }
+
+    & > div > aside {
+      order: -1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-m);
+      padding: var(--space-m);
+      min-height: 20rem;
+      background: var(--color-panel);
+      border: 1px solid var(--color-muted);
+      border-radius: 8px;
+
+      & > div {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-s);
+      }
+    }
+
+    @container tablist (min-width: 900px) {
+      & > div {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+      }
+
+      & > div > aside {
+        order: 1;
+      }
+    }
+
+    p {
+      color: var(--color-body);
+      max-width: 60ch;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: var(--space-s);
+      color: var(--color-p100);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { Draggable } from "gsap/Draggable";
+
+  gsap.registerPlugin(Draggable);
+
+  const tablist = document.querySelector<HTMLElement>("[role=tablist]");
+  const wrapper = tablist?.parentElement ?? null;
+  const tabs = Array.from(
+    tablist?.querySelectorAll<HTMLElement>("[role=tab]") ?? [],
+  );
+  const jacks = tabs.map((tab) => tab.querySelector<HTMLElement>(".jack"));
+  const hasInputJack = !!wrapper?.querySelector(".input-jack");
+  const cable = wrapper?.querySelector<SVGPathElement>(".cable") ?? null;
+  const plug = wrapper?.querySelector<HTMLElement>(".plug") ?? null;
+
+  type Point = { x: number; y: number };
+
+  function activateByClickOrKey(tab: HTMLElement) {
+    const index = tabs.indexOf(tab);
+    if (index < 0) return;
+    activate(index, { focus: true });
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => activateByClickOrKey(tab));
+
+    tab.addEventListener("keydown", (e) => {
+      const idx = tabs.indexOf(tab);
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        activateByClickOrKey(tabs[(idx + 1) % tabs.length]);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        activateByClickOrKey(tabs[(idx - 1 + tabs.length) % tabs.length]);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        activateByClickOrKey(tabs[0]);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        activateByClickOrKey(tabs[tabs.length - 1]);
+      }
+    });
+  });
+
+  let activeIndex = Math.max(
+    0,
+    tabs.findIndex((t) => t.getAttribute("aria-selected") === "true"),
+  );
+
+  // Reassigned below once the patch-cable elements are found; stays a no-op
+  // (e.g. if markup is missing) so `activate` is always safe to call.
+  let settleCableTo: (index: number, opts?: { ease?: string }) => void =
+    () => {};
+
+  function activate(
+    index: number,
+    opts: { focus: boolean; ease?: string },
+  ) {
+    const changed = index !== activeIndex;
+
+    tabs.forEach((t, i) => {
+      t.setAttribute("aria-selected", i === index ? "true" : "false");
+      t.setAttribute("tabindex", i === index ? "0" : "-1");
+      const panel = document.getElementById(
+        t.getAttribute("aria-controls") ?? "",
+      );
+      if (panel) panel.hidden = i !== index;
+    });
+
+    activeIndex = index;
+    if (changed && opts.focus) tabs[index].focus();
+    settleCableTo(index, { ease: opts.ease });
+  }
+
+  // Patch cable: a purely visual/interactive layer on top of the activation
+  // logic above. Click and keyboard activation always work on their own;
+  // dragging the plug is an equivalent, additional trigger for `activate`.
+  if (wrapper && hasInputJack && cable && plug && jacks.every(Boolean)) {
+    const prefersReducedMotion = () =>
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function wrapperPoint(el: HTMLElement): Point {
+      const wrapperRect = wrapper!.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      return {
+        x: r.left + r.width / 2 - wrapperRect.left,
+        y: r.top + r.height / 2 - wrapperRect.top,
+      };
+    }
+
+    // Every panel has its own `.input-jack`, but only the currently visible
+    // panel's copy has a real layout box (hidden panels are display:none),
+    // so resolve it fresh from the active tab rather than caching one ref.
+    function currentInputJack(): HTMLElement | null {
+      const panelId = tabs[activeIndex]?.getAttribute("aria-controls") ?? "";
+      return (
+        document
+          .getElementById(panelId)
+          ?.querySelector<HTMLElement>(".input-jack") ?? null
+      );
+    }
+
+    function inputPoint(): Point {
+      const jack = currentInputJack();
+      return jack ? wrapperPoint(jack) : { x: 0, y: 0 };
+    }
+
+    const jackPoint = (index: number) => wrapperPoint(jacks[index]!);
+
+    function cablePath(start: Point, end: Point) {
+      const dy = end.y - start.y;
+      const bend = Math.max(40, Math.abs(dy) * 0.5);
+      const lean = Math.sign(dy) || -1;
+      const cp1y = start.y + bend * lean;
+      const cp2y = end.y - bend * lean;
+      return `M ${start.x} ${start.y} C ${start.x} ${cp1y}, ${end.x} ${cp2y}, ${end.x} ${end.y}`;
+    }
+
+    function drawCableTo(point: Point) {
+      cable!.setAttribute("d", cablePath(inputPoint(), point));
+    }
+
+    gsap.set(plug, { xPercent: -50, yPercent: -50 });
+
+    function paintInstant(index: number) {
+      const point = jackPoint(index);
+      gsap.set(plug, { x: point.x, y: point.y, opacity: 1 });
+      drawCableTo(point);
+    }
+
+    settleCableTo = function (index: number, opts: { ease?: string } = {}) {
+      const target = jackPoint(index);
+      const targetD = cablePath(inputPoint(), target);
+
+      if (prefersReducedMotion()) {
+        gsap.set(plug, { x: target.x, y: target.y, opacity: 1 });
+        cable!.setAttribute("d", targetD);
+        return;
+      }
+
+      // At rest (click/keyboard) there's no existing velocity, so an inOut
+      // ease avoids the "arrives instantly" look a plain out-ease has. Right
+      // after a drag release the plug already has velocity, so an inOut
+      // ease (which starts at zero) reads as a stutter; drag hands in an
+      // out-ease instead, which starts fast and continues the motion.
+      const ease = opts.ease ?? "power2.inOut";
+
+      gsap.to(plug, {
+        x: target.x,
+        y: target.y,
+        opacity: 1,
+        duration: 0.45,
+        ease,
+      });
+
+      gsap.to(cable, {
+        attr: { d: targetD },
+        duration: 0.45,
+        ease,
+      });
+    };
+
+    // Initial paint: no entrance animation, cable renders already connected.
+    paintInstant(activeIndex);
+
+    // Only reposition on a genuine width change (viewport resize/container
+    // query breakpoint). Toggling which panel is `hidden` changes the
+    // wrapper's *height* on every tab switch, which would otherwise fire
+    // this observer mid-settle-tween and snap the cable straight to the
+    // target, cutting the animation short.
+    let lastWidth = wrapper.getBoundingClientRect().width;
+    const resizeObserver = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width ?? lastWidth;
+      if (width === lastWidth) return;
+      lastWidth = width;
+      paintInstant(activeIndex);
+    });
+    resizeObserver.observe(wrapper);
+
+    const SNAP_DISTANCE = 56;
+
+    function nearestTabIndex(point: Point): number {
+      let best = -1;
+      let bestDistance = Infinity;
+
+      jacks.forEach((_, i) => {
+        const p = jackPoint(i);
+        const distance = Math.hypot(p.x - point.x, p.y - point.y);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          best = i;
+        }
+      });
+
+      return bestDistance <= SNAP_DISTANCE ? best : -1;
+    }
+
+    let hoveredIndex = -1;
+
+    function setHover(index: number) {
+      if (index === hoveredIndex) return;
+      if (hoveredIndex >= 0)
+        tabs[hoveredIndex].classList.remove("cable-target");
+      hoveredIndex = index;
+      if (hoveredIndex >= 0) tabs[hoveredIndex].classList.add("cable-target");
+    }
+
+    Draggable.create(plug, {
+      type: "x,y",
+      bounds: wrapper,
+      onDragStart() {
+        gsap.killTweensOf(plug);
+      },
+      onDrag() {
+        const point = { x: this.x, y: this.y };
+        drawCableTo(point);
+        setHover(nearestTabIndex(point));
+      },
+      onDragEnd() {
+        const point = { x: this.x, y: this.y };
+        const target = nearestTabIndex(point);
+        setHover(-1);
+
+        if (target >= 0 && target !== activeIndex) {
+          activate(target, { focus: false, ease: "power2.out" });
+        } else {
+          settleCableTo(activeIndex, { ease: "power2.out" });
+        }
+      },
+    });
+  }
+</script>

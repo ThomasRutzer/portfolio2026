@@ -12,7 +12,7 @@ Thomas Rutzer's personal portfolio, hosted at thomasrutzer.dev. Thomas' focus is
 npm run dev       # dev server at localhost:4321
 npm run build     # production build to ./dist/
 npm run preview   # preview production build locally
-npx check-ts   # type-check .astro files
+npm check-ts   # type-check .astro files
 npx prettier --write .  # format all files
 ```
 
