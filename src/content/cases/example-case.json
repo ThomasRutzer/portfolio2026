@@ -10,6 +10,7 @@
     { "label": "Accessibility", "type": "architecture" }
   ],
   "featured": false,
+  "icon": "eclipse",
   "image": "https://example.com/image.jpg",
   "status": "unmatched",
   "metrics": [

@@ -6,17 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Thomas Rutzer's personal portfolio, hosted at thomasrutzer.dev. Thomas' focus is a split between architecture & engineering unique interfaces & interactions. This two aspects are reflected visually, where architecture is visualized with a purple shade, and the execution of the UI in a yellow shaed. Beyond showcasing web development work, the design deliberately reflects his identity as a musician — aesthetic choices should honour both dimensions.
 
-## Skills
-
-- `/emil-design-eng` — invoke this skill when working on UI polish, animations, or interaction design. It encodes Emil Kowalski's design engineering philosophy: animation decision framework, easing curves, spring physics, CSS transform techniques, `clip-path` animation, gesture handling, and performance rules.
-
 ## Commands
 
 ```sh
 npm run dev       # dev server at localhost:4321
 npm run build     # production build to ./dist/
 npm run preview   # preview production build locally
-npx astro check   # type-check .astro files
+npx check-ts   # type-check .astro files
 npx prettier --write .  # format all files
 ```
 
@@ -35,7 +31,7 @@ This is an Astro 6 portfolio site — no UI framework (React/Vue/etc.), only `.a
 **Path aliases** (defined in [tsconfig.json](tsconfig.json)):
 `@assets/*`, `@components/*`, `@content/*`, `@data/*`, `@layouts/*`, `@lib/*`, `@utils/*`, `@styles/*` — all resolve to `./src/<dir>/`.
 
-**Content collections** — cases are JSON files in `src/content/cases/`. The collection is defined in [src/content.config.ts](src/content.config.ts) using Astro's glob loader. Currently the schema only requires `title: string`; the example JSON shows additional fields (`description`, `date`, `tags`, `featured`, `image`) that are not yet part of the enforced schema.
+**Content collections** — cases are JSON files in `src/content/cases/`. The collection is defined in [src/content.config.ts](src/content.config.ts) using Astro's glob loader.
 
 **CSS design system** — all design tokens live in [src/site.css](src/site.css) as CSS custom properties:
 

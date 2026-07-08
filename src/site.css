@@ -60,6 +60,9 @@
   --container-max: 80rem;
   --container-max-narrow: 64rem;
   --container-padding: var(--space-l);
+
+  /* Effects */
+  --border-radius-s: 4px;
 }
 
 body {

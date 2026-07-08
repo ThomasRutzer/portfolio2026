@@ -10,6 +10,7 @@
     { "label": "Accessibility", "type": "architecture" }
   ],
   "featured": true,
+  "icon": "orbit",
   "image": "/images/cases/sonic-palette.jpg",
   "link": "https://sonic-palette.example.com",
   "metrics": [

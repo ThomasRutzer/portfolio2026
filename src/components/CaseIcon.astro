@@ -1,0 +1,70 @@
+---
+export type CaseIconVariant = "twin" | "orbit" | "eclipse";
+
+interface Props {
+  icon: CaseIconVariant;
+}
+
+const { icon } = Astro.props;
+---
+
+{
+  icon === "twin" && (
+    <svg
+      width="40"
+      height="40"
+      viewBox="0 0 40 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <circle cx="20" cy="20" r="19.5" stroke="#F2F1E6" />
+      <path
+        d="M26.5 3.5C33.5784 3.5 39.5 10.7737 39.5 20C39.5 29.2263 33.5784 36.5 26.5 36.5C19.4216 36.5 13.5 29.2263 13.5 20C13.5 10.7737 19.4216 3.5 26.5 3.5Z"
+        stroke="#F2F1E6"
+      />
+      <path
+        d="M23.5 1.5C32.2727 1.5 39.5 9.71417 39.5 20C39.5 30.2858 32.2727 38.5 23.5 38.5C14.7273 38.5 7.5 30.2858 7.5 20C7.5 9.71417 14.7273 1.5 23.5 1.5Z"
+        stroke="#F2F1E6"
+      />
+    </svg>
+  )
+}
+{
+  icon === "orbit" && (
+    <svg
+      viewBox="0 0 40 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <circle cx="20" cy="22" r="17.5" stroke="currentColor" />
+      <circle cx="20" cy="24" r="15.5" stroke="currentColor" />
+      <circle cx="20" cy="26" r="13.5" stroke="currentColor" />
+      <circle cx="20" cy="20" r="19.5" stroke="currentColor" />
+    </svg>
+  )
+}
+{
+  icon === "eclipse" && (
+    <svg
+      width="40"
+      height="40"
+      viewBox="0 0 40 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <circle cx="18.0952" cy="21.9048" r="17.5952" stroke="#F2F1E6" />
+      <circle cx="22.8096" cy="17.1905" r="16.6905" stroke="#F2F1E6" />
+    </svg>
+  )
+}
+
+<style>
+  svg {
+    width: 24px;
+    height: 24px;
+    color: var(--color-ui);
+  }
+</style>
