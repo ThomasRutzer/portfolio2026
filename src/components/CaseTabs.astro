@@ -54,7 +54,7 @@ const { cases } = Astro.props;
         class="container-narrow"
       >
         <div class="input-jack" aria-hidden="true" />
-        <h3>{c.data.title}</h3>
+          <h3>{c.data.title}</h3>
         <div>
           {c.data.description && <p>{c.data.description}</p>}
           {c.data.stats && <CaseStats stats={c.data.stats} />}
@@ -148,7 +148,7 @@ const { cases } = Astro.props;
       flex-direction: column;
       align-items: center;
       position: absolute;
-      left: 25%;
+      left: 50%;
       bottom: -10px;
       transform: translateX(-50%) translateY(50%);
 
@@ -225,6 +225,7 @@ const { cases } = Astro.props;
     margin: var(--space-2xs) auto 0;
     width: 14px;
     height: 14px;
+    left: 90%;
     border-radius: 50%;
     border: 1px solid var(--color-body);
     background: var(--color-bg);
@@ -354,13 +355,12 @@ const { cases } = Astro.props;
 
   // Reassigned below once the patch-cable elements are found; stays a no-op
   // (e.g. if markup is missing) so `activate` is always safe to call.
-  let settleCableTo: (index: number, opts?: { ease?: string }) => void =
-    () => {};
-
-  function activate(
+  let settleCableTo: (
     index: number,
-    opts: { focus: boolean; ease?: string },
-  ) {
+    opts?: { ease?: string },
+  ) => void = () => {};
+
+  function activate(index: number, opts: { focus: boolean; ease?: string }) {
     const changed = index !== activeIndex;
 
     tabs.forEach((t, i) => {
