@@ -15,7 +15,7 @@ const { cases } = Astro.props;
 ---
 
 <div>
-  <div role="tablist" aria-label="Case studies">
+  <div role="tablist" aria-label="Case studies" class="container">
     {
       cases.map((c, i) => (
         <button
@@ -43,6 +43,7 @@ const { cases } = Astro.props;
     <path class="cable"></path>
   </svg>
   <div class="plug" aria-hidden="true"></div>
+  <div class="input-jack" aria-hidden="true"></div>
 
   {
     cases.map((c, i) => (
@@ -53,27 +54,25 @@ const { cases } = Astro.props;
         hidden={i !== 0}
         class="container-narrow"
       >
-        <div class="input-jack" aria-hidden="true" />
+        <div class="case-description">
           <h3>{c.data.title}</h3>
-        <div>
           {c.data.description && <p>{c.data.description}</p>}
           {c.data.stats && <CaseStats stats={c.data.stats} />}
         </div>
-        {/* <aside aria-hidden="true">
-            {c.data.status && <CaseStatus status={c.data.status} />}
-            {c.data.metrics && (
-              <div>
-                {c.data.metrics.map((m) => (
-                  <Progress
-                    label={m.label}
-                    value={m.value}
-                    progress={m.progress}
-                  />
-                ))}
-              </div>
-            )}
-          </aside>
-        </div> */}
+        <aside aria-hidden="true" class="case-metrics">
+          {c.data.status && <CaseStatus status={c.data.status} />}
+          {c.data.metrics && (
+            <div>
+              {c.data.metrics.map((m) => (
+                <Progress
+                  label={m.label}
+                  value={m.value}
+                  progress={m.progress}
+                />
+              ))}
+            </div>
+          )}
+        </aside>
       </section>
     ))
   }
@@ -222,10 +221,10 @@ const { cases } = Astro.props;
   .input-jack {
     position: relative;
     display: block;
-    margin: var(--space-2xs) auto 0;
+    margin-top: var(--space-2xl-3xl);
+    margin-left: 75%;
     width: 14px;
     height: 14px;
-    left: 90%;
     border-radius: 50%;
     border: 1px solid var(--color-body);
     background: var(--color-bg);
@@ -233,7 +232,13 @@ const { cases } = Astro.props;
   }
 
   section[role="tabpanel"] {
-    margin-top: var(--space-2xl-3xl);
+    display: flex;
+    flex-direction: column-reverse;
+
+    @container tablist (min-width: 900px) {
+      flex-direction: row;
+      gap: var(--space-2xl);
+    }
 
     &[hidden] {
       display: none;
@@ -250,55 +255,18 @@ const { cases } = Astro.props;
       }
     }
 
-    & > div {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: var(--space-m);
+    .case-description {
+      flex: 1;
     }
 
-    & > div > aside {
-      order: -1;
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-m);
-      padding: var(--space-m);
-      min-height: 20rem;
+    .case-metrics {
       background: var(--color-panel);
+      border-radius: var(--border-radius-s);
       border: 1px solid var(--color-muted);
-      border-radius: 8px;
-
-      & > div {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-s);
-      }
-    }
-
-    @container tablist (min-width: 900px) {
-      & > div {
-        grid-template-columns: 1fr 1fr;
-        align-items: start;
-      }
-
-      & > div > aside {
-        order: 1;
-      }
-    }
-
-    p {
-      color: var(--color-body);
-      max-width: 60ch;
-    }
-
-    a {
-      display: inline-block;
-      margin-top: var(--space-s);
-      color: var(--color-p100);
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
+      border: 1px solid var(--color-muted);
+      flex: 1;
+      margin-top: -7px;
+      padding: var(--space-m);
     }
   }
 </style>
@@ -315,7 +283,7 @@ const { cases } = Astro.props;
     tablist?.querySelectorAll<HTMLElement>("[role=tab]") ?? [],
   );
   const jacks = tabs.map((tab) => tab.querySelector<HTMLElement>(".jack"));
-  const hasInputJack = !!wrapper?.querySelector(".input-jack");
+  const inputJack = wrapper?.querySelector<HTMLElement>(".input-jack") ?? null;
   const cable = wrapper?.querySelector<SVGPathElement>(".cable") ?? null;
   const plug = wrapper?.querySelector<HTMLElement>(".plug") ?? null;
 
@@ -380,7 +348,7 @@ const { cases } = Astro.props;
   // Patch cable: a purely visual/interactive layer on top of the activation
   // logic above. Click and keyboard activation always work on their own;
   // dragging the plug is an equivalent, additional trigger for `activate`.
-  if (wrapper && hasInputJack && cable && plug && jacks.every(Boolean)) {
+  if (wrapper && inputJack && cable && plug && jacks.every(Boolean)) {
     const prefersReducedMotion = () =>
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -393,21 +361,8 @@ const { cases } = Astro.props;
       };
     }
 
-    // Every panel has its own `.input-jack`, but only the currently visible
-    // panel's copy has a real layout box (hidden panels are display:none),
-    // so resolve it fresh from the active tab rather than caching one ref.
-    function currentInputJack(): HTMLElement | null {
-      const panelId = tabs[activeIndex]?.getAttribute("aria-controls") ?? "";
-      return (
-        document
-          .getElementById(panelId)
-          ?.querySelector<HTMLElement>(".input-jack") ?? null
-      );
-    }
-
     function inputPoint(): Point {
-      const jack = currentInputJack();
-      return jack ? wrapperPoint(jack) : { x: 0, y: 0 };
+      return wrapperPoint(inputJack!);
     }
 
     const jackPoint = (index: number) => wrapperPoint(jacks[index]!);
