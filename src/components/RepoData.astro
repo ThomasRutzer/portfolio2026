@@ -1,0 +1,96 @@
+---
+interface Props {
+  packageId: string;
+  match: number; // 0–100
+  verified: string;
+  region: string;
+  queueLabel: string;
+  latency: string;
+}
+
+const { packageId, match, verified, region, queueLabel, latency } =
+  Astro.props;
+const clampedMatch = Math.max(0, Math.min(100, match));
+---
+
+<dl class="repo-data" aria-label="Repository sync status">
+  <div class="row">
+    <dt>PKG #{packageId}</dt>
+    <dd>MATCHED · {clampedMatch}%</dd>
+  </div>
+  <div class="row">
+    <dt><span class="arrow" aria-hidden="true">→</span> {verified}</dt>
+    <dd>REGION {region}</dd>
+  </div>
+  <div class="row">
+    <dt>QUEUE {queueLabel}<span class="cursor" aria-hidden="true"></span></dt>
+    <dd>{latency}</dd>
+  </div>
+</dl>
+
+<style>
+  .repo-data {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    padding: var(--space-s);
+    background: var(--color-panel);
+    border: 1px solid var(--color-muted);
+    border-radius: var(--border-radius-s);
+    margin: 0;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-m);
+  }
+
+  dt,
+  dd {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: var(--font-step-0);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  dt {
+    color: var(--color-ui);
+  }
+
+  dd {
+    color: var(--color-body);
+  }
+
+  .arrow {
+    color: var(--color-p100);
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+    margin-inline-start: 0.15em;
+    background: var(--color-y100);
+    vertical-align: -0.15em;
+    animation: blink 1s step-end infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor {
+      animation: none;
+    }
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+</style>

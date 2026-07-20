@@ -11,11 +11,23 @@
   ],
   "icon": "eclipse",
   "image": "https://example.com/image.jpg",
-  "status": "unmatched",
+  "status": "planned",
   "metrics": [
     { "label": "Completion", "value": "47%", "progress": 47 },
     { "label": "Test Coverage", "value": "61%", "progress": 61 },
-    { "label": "Performance Score", "value": "73%", "progress": 73 },
-    { "label": "Satisfaction Rate", "value": "85%", "progress": 85 }
-  ]
+    { "label": "Performance Score", "value": "73%", "progress": 73 }
+  ],
+  "achievements": [
+    { "label": "Initial prototype shipped", "value": "100%", "progress": 100 },
+    { "label": "Stakeholder review passed", "value": "60%", "progress": 60 },
+    { "label": "Production rollout", "value": "25%", "progress": 25 }
+  ],
+  "repoData": {
+    "packageId": "DE4471829",
+    "match": 94,
+    "verified": "RECIPIENT VERIFIED",
+    "region": "EU-W",
+    "queueLabel": "847 pending",
+    "latency": "~2s"
+  }
 }

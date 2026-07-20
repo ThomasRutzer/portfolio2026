@@ -1,8 +1,10 @@
 ---
+import About from "@components/About.astro";
 import CaseTabs from "@components/CaseTabs.astro";
 import FocusAreas from "@components/FocusAreas.astro";
 import Hero from "@components/Hero.astro";
-import Waveform from "@components/Waveform.astro";
+import SectionConnector from "@components/SectionConnector.astro";
+import SectionTitle from "@components/SectionTitle.astro";
 import Layout from "@layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
@@ -11,14 +13,25 @@ const cases = await getCollection("cases");
 
 <Layout title="Home Page">
   <Hero />
-  <div class="container">
-    <Waveform labels={[{ position: 0.25, text: "Intro" }, { position: 0.6, text: "Drop" }, { position: 0.85, text: "Outro" }]} />
-  </div>
 
-  {cases.length > 0 && (
-    <section class="container">
-      <CaseTabs cases={cases} />
-    </section>
-  )}
-  <FocusAreas />
+  {
+    cases.length > 0 && (
+      <section>
+        <div class="container">
+          <SectionTitle>Work</SectionTitle>
+        </div>
+        <CaseTabs cases={cases} />
+      </section>
+    )
+  }
+  <div class="container-narrow">
+    <SectionConnector />
+  </div>
+  <section class="container">
+    <FocusAreas />
+  </section>
+  <div class="container-narrow connector-attached">
+    <SectionConnector width="sm" direction="reverse" />
+  </div>
+  <About />
 </Layout>

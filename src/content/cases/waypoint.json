@@ -11,16 +11,29 @@
   ],
   "icon": "twin",
   "image": "/images/cases/waypoint.jpg",
+  "status": "progress",
   "metrics": [
     { "label": "Route Accuracy", "value": "96%", "progress": 96 },
     { "label": "Data Coverage", "value": "89%", "progress": 89 },
-    { "label": "Time Saved vs Baseline", "value": "74%", "progress": 74 },
-    { "label": "Spreadsheet Dependency", "value": "0%", "progress": 0 }
+    { "label": "Time Saved vs Baseline", "value": "74%", "progress": 74 }
   ],
   "stats": [
     { "value": "40+", "label": "Tour dates" },
     { "value": "8", "label": "Countries" },
     { "value": "~3h", "label": "Saved per week" },
     { "value": "1", "label": "Spreadsheet replaced" }
+  ],
+  "achievements": [
+    {
+      "label": "Rolled out to full touring band",
+      "value": "100%",
+      "progress": 100
+    },
+    {
+      "label": "Zero missed tour dates since launch",
+      "value": "100%",
+      "progress": 100
+    },
+    { "label": "Manager onboarding completed", "value": "90%", "progress": 90 }
   ]
 }
