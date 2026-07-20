@@ -1,0 +1,143 @@
+---
+import Jack from "@components/Jack.astro";
+import Panel from "@components/Panel.astro";
+import Progress from "@components/Progress.astro";
+import RadialProgress from "@components/RadialProgress.astro";
+import Waveform from "@components/Waveform.astro";
+import SectionTitle from "./SectionTitle.astro";
+
+interface Props {
+  image?: string;
+  connector?: boolean;
+}
+
+const { image, connector = false } = Astro.props;
+---
+
+<section class="container">
+  <Panel>
+    <SectionTitle tag="p" signalVariant="yellow"
+      >About · Signal Chain</SectionTitle
+    >
+    <div class="rig">
+      <figure>
+        {
+          image ? (
+            <img src={image} alt="Operator" draggable="false" />
+          ) : (
+            <span aria-hidden="true" />
+          )
+        }
+        <figcaption>Operator</figcaption>
+      </figure>
+
+      <RadialProgress progress={62} label="Gain" value="0.62" />
+
+      <div class="wave">
+        <Waveform
+          variant="yellow"
+          aspectRatio={100 / 20}
+          labels={[
+            { position: 0.25, text: "Intro", href: "https://thomasrutzer.dev" },
+            { position: 0.6, text: "Drop", href: "https://thomasrutzer.dev" },
+            { position: 0.85, text: "Outro", href: "https://thomasrutzer.dev" },
+          ]}
+        />
+      </div>
+
+      <Progress label="Level" value="33%" progress={33} />
+    </div>
+  </Panel>
+
+  <div class="io">
+    <div data-direction="input">
+      <Jack />
+      <span>Input · Problem</span>
+    </div>
+    <span class="flow" aria-hidden="true">∿ ⟶ /\ ⟶ ⊙</span>
+    <div data-direction="output">
+      <span>Output · Interface</span>
+      <Jack />
+    </div>
+  </div>
+</section>
+
+<style>
+  .rig {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: center;
+    gap: var(--space-l);
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    margin: 0;
+
+    img,
+    span {
+      width: 4rem;
+      height: 4rem;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    span {
+      background: linear-gradient(
+        135deg,
+        var(--color-p400),
+        var(--color-muted)
+      );
+    }
+
+    figcaption {
+      font-size: var(--font-step-0);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-body);
+    }
+  }
+
+  .wave {
+    min-width: 0;
+  }
+
+  .io {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    margin-top: var(--space-l);
+    padding-block: var(--space-s);
+    color: var(--color-body);
+    font-size: var(--font-step-0);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+
+    div {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+
+      &[data-direction="output"] {
+        flex-direction: row-reverse;
+      }
+    }
+  }
+
+  .flow {
+    color: var(--color-p200);
+    letter-spacing: 0.4em;
+  }
+
+  .connector-attached {
+    margin-bottom: -7px;
+  }
+</style>
