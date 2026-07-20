@@ -4,8 +4,12 @@ import CaseIcon from "@components/CaseIcon.astro";
 import CaseStats from "@components/CaseStats.astro";
 import CaseStatus from "@components/CaseStatus.astro";
 import CaseTags from "@components/CaseTags.astro";
+import Jack from "@components/Jack.astro";
+import Panel from "@components/Panel.astro";
 import type { CollectionEntry } from "astro:content";
+import RadialProgress from "./RadialProgress.astro";
 import Progress from "./Progress.astro";
+import RepoData from "./RepoData.astro";
 
 interface Props {
   cases: CollectionEntry<"cases">[];
@@ -42,8 +46,12 @@ const { cases } = Astro.props;
   <svg class="cable-layer" aria-hidden="true">
     <path class="cable"></path>
   </svg>
-  <div class="plug" aria-hidden="true"></div>
-  <div class="input-jack" aria-hidden="true"></div>
+
+  <div class="container-narrow" aria-hidden="true">
+    <div class="plug"></div>
+
+    <Jack class="input-jack" />
+  </div>
 
   {
     cases.map((c, i) => (
@@ -60,18 +68,41 @@ const { cases } = Astro.props;
           {c.data.stats && <CaseStats stats={c.data.stats} />}
         </div>
         <aside aria-hidden="true" class="case-metrics">
-          {c.data.status && <CaseStatus status={c.data.status} />}
-          {c.data.metrics && (
-            <div>
-              {c.data.metrics.map((m) => (
-                <Progress
-                  label={m.label}
-                  value={m.value}
-                  progress={m.progress}
-                />
-              ))}
-            </div>
-          )}
+          <Panel name={c.data.title} rev={c.data.status.toUpperCase()}>
+            <CaseStatus status={c.data.status} />
+            {c.data.metrics && (
+              <div class="radial-metrics">
+                {c.data.metrics.map((m) => (
+                  <RadialProgress
+                    label={m.label}
+                    value={m.value}
+                    progress={m.progress}
+                  />
+                ))}
+              </div>
+            )}
+            {c.data.achievements && (
+              <div class="achievements">
+                {c.data.achievements.map((a) => (
+                  <Progress
+                    label={a.label}
+                    value={a.value}
+                    progress={a.progress}
+                  />
+                ))}
+              </div>
+            )}
+            {c.data.repoData && (
+              <RepoData
+                packageId={c.data.repoData.packageId}
+                match={c.data.repoData.match}
+                verified={c.data.repoData.verified}
+                region={c.data.repoData.region}
+                queueLabel={c.data.repoData.queueLabel}
+                latency={c.data.repoData.latency}
+              />
+            )}
+          </Panel>
         </aside>
       </section>
     ))
@@ -218,16 +249,10 @@ const { cases } = Astro.props;
     }
   }
 
-  .input-jack {
+  :global(.input-jack) {
     position: relative;
-    display: block;
     margin-top: var(--space-2xl-3xl);
     margin-left: 75%;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 1px solid var(--color-body);
-    background: var(--color-bg);
     z-index: 1;
   }
 
@@ -259,14 +284,34 @@ const { cases } = Astro.props;
       flex: 1;
     }
 
+    .achievements {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-s);
+      margin-top: var(--space-l);
+    }
+
     .case-metrics {
       background: var(--color-panel);
       border-radius: var(--border-radius-s);
       border: 1px solid var(--color-muted);
-      border: 1px solid var(--color-muted);
+      display: flex;
       flex: 1;
+      flex-direction: column;
+      gap: var(--space-m);
       margin-top: -7px;
-      padding: var(--space-m);
+      padding: var(--space-s);
+    }
+
+    .radial-metrics {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      gap: var(--space-s);
+      text-align: center;
+      & > figure {
+        flex: 1 1 0;
+      }
     }
   }
 </style>

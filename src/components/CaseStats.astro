@@ -1,0 +1,57 @@
+---
+interface Stat {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  stats: Stat[];
+}
+
+const { stats } = Astro.props;
+const visible = stats.slice(0, 4);
+---
+
+<dl>
+  {
+    visible.map((stat) => (
+      <div>
+        <dt>{stat.value}</dt>
+        <dd>{stat.label}</dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  div {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-m);
+    background: var(--color-panel);
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-s);
+    background: var(--color-bg);
+    border-radius: var(---border-radius-s);
+    overflow: hidden;
+  }
+
+  dt {
+    font-family: var(--font-title);
+    font-size: var(--font-step-1);
+    color: var(--color-p100);
+  }
+
+  dd {
+    font-family: var(--font-main);
+    font-size: var(--font-step-0);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-body);
+    margin: 0;
+  }
+</style>

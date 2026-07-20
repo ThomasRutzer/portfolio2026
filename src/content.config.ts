@@ -16,16 +16,14 @@ const caseCollection = defineCollection({
         }),
       )
       .optional(),
-    featured: z.boolean().optional(),
+    icon: z.enum(["twin", "orbit", "eclipse"]),
     image: z.string().optional(),
     link: z.string().optional(),
     stats: z
       .array(z.object({ value: z.string(), label: z.string() }))
       .max(4)
       .optional(),
-    status: z
-      .enum(["unmatched", "review", "matched", "deployed", "closed"])
-      .optional(),
+    status: z.enum(["planned", "progress", "deployed", "archived"]),
     metrics: z
       .array(
         z.object({
@@ -34,6 +32,25 @@ const caseCollection = defineCollection({
           progress: z.number().min(0).max(100),
         }),
       )
+      .optional(),
+    achievements: z
+      .array(
+        z.object({
+          label: z.string(),
+          value: z.string(),
+          progress: z.number().min(0).max(100),
+        }),
+      )
+      .optional(),
+    repoData: z
+      .object({
+        packageId: z.string(),
+        match: z.number().min(0).max(100),
+        verified: z.string(),
+        region: z.string(),
+        queueLabel: z.string(),
+        latency: z.string(),
+      })
       .optional(),
   }),
 });
