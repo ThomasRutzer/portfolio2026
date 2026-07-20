@@ -12,7 +12,7 @@ Thomas Rutzer's personal portfolio, hosted at thomasrutzer.dev. Thomas' focus is
 npm run dev       # dev server at localhost:4321
 npm run build     # production build to ./dist/
 npm run preview   # preview production build locally
-npm check-ts   # type-check .astro files
+npm run check-ts   # check .astro files
 npx prettier --write .  # format all files
 ```
 
@@ -23,17 +23,15 @@ No test suite is configured.
 - **Node.js >=24.17.0 required.** Bun and Deno are not supported.
 - **No CSS frameworks.** No Tailwind or any utility/component library. All styling is hand-written CSS — the site is meant to show off modern CSS capabilities directly.
 - **SSG only.** Astro is configured for static site generation; avoid patterns that require a server runtime.
+- NEVER `cd` into the project, we are starting in the repo
 
 ## Architecture
 
 This is an Astro 6 portfolio site — no UI framework (React/Vue/etc.), only `.astro` components. TypeScript is configured in strict mode.
 
-**Path aliases** (defined in [tsconfig.json](tsconfig.json)):
-`@assets/*`, `@components/*`, `@content/*`, `@data/*`, `@layouts/*`, `@lib/*`, `@utils/*`, `@styles/*` — all resolve to `./src/<dir>/`.
-
 **Content collections** — cases are JSON files in `src/content/cases/`. The collection is defined in [src/content.config.ts](src/content.config.ts) using Astro's glob loader.
 
-**CSS design system** — all design tokens live in [src/site.css](src/site.css) as CSS custom properties:
+**Design system**
 
 - Fluid type scale: `--font-step-0` through `--font-step-4` (generated with Utopia, 360px → 1600px viewport)
 - Fluid space scale: `--space-3xs` through `--space-3xl` with one-up pairs
@@ -50,3 +48,22 @@ This is an Astro 6 portfolio site — no UI framework (React/Vue/etc.), only `.a
 **Components**
 
 - All interactive UI elements must be reachable via Keyboard
+
+### Variants
+
+Variants in components should be defined with class:list of Astro and a resulting modifier class
+
+---
+
+```
+const { isRed } = Astro.props;
+
+<!-- If `isRed` is truthy, class will be "box red". -->
+<!-- If `isRed` is falsy, class will be "box". -->
+<div class:list={['box', { red: isRed }]}><slot /></div>
+
+<style>
+  .box { border: 1px solid blue; }
+  .red { border-color: red; }
+</style>
+```
