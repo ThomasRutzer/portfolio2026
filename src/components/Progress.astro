@@ -1,0 +1,85 @@
+---
+interface Props {
+  label: string;
+  value: string;
+  progress: number; // 0–100
+}
+
+const { label, value, progress } = Astro.props;
+const clamped = Math.max(0, Math.min(100, progress));
+---
+
+<figure>
+  <figcaption>
+    <span class="label">{label}</span>
+    <span class="value">{value}</span>
+  </figcaption>
+  <div
+    role="progressbar"
+    aria-valuenow={clamped}
+    aria-valuemin={0}
+    aria-valuemax={100}
+    aria-label={label}
+  >
+    <div class="fill"></div>
+  </div>
+</figure>
+
+<style define:vars={{ progress: `${clamped}%` }}>
+  figure {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+    margin: 0;
+  }
+
+  figcaption {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .label {
+    font-family: var(--font-main);
+    font-size: var(--font-step-0);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-body);
+  }
+
+  .value {
+    font-family: var(--font-main);
+    font-size: var(--font-step-0);
+    color: var(--color-ui);
+  }
+
+  [role="progressbar"] {
+    height: 4px;
+    background: var(--color-inactive);
+    border-radius: 2px;
+    overflow: visible;
+    position: relative;
+  }
+
+  .fill {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: var(--progress);
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--color-p400), var(--color-p100));
+    animation: fill-grow 0.6s ease-out both;
+  }
+
+  @keyframes fill-grow {
+    from {
+      width: 0%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fill {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,122 @@
+---
+interface Props {
+  progress: number; // 0–100
+  label: string;
+  value: string;
+  size?: number;
+}
+
+const { progress, label, value, size = 68 } = Astro.props;
+
+// Clockwise from 12 o'clock
+const spokes = [
+  "M 33.6035 12.353 L 33.6035 20.853",
+  "M 42.1509 14.1479 L 38.7319 21.93",
+  "M 42.5283 24.6781 L 48.6908 18.5156",
+  "M 45.3645 29.0219 L 53.4853 25.8587",
+  "M 46.3535 33.603 L 54.8535 33.603",
+  "M 45.2764 38.7314 L 53.0584 42.1504",
+  "M 42.5283 42.5278 L 48.6908 48.6903",
+  "M 38.1846 45.3643 L 41.3478 53.485",
+  "M 33.6035 46.353 L 33.6035 54.853",
+  "M 28.4751 45.2764 L 25.0561 53.0584",
+  "M 18.5161 48.6903 L 24.6786 42.5278",
+  "M 13.7214 41.3476 L 21.8422 38.1843",
+  "M 12.1035 33.103 L 20.6035 33.103",
+  "M 14.1484 25.0557 L 21.9305 28.4747",
+  "M 18.5161 18.5156 L 24.6786 24.6781",
+  "M 25.8589 13.7212 L 29.0221 21.842",
+];
+
+const clamped = Math.max(0, Math.min(100, progress));
+const activeCount = Math.round((clamped / 100) * spokes.length);
+---
+
+<figure>
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 68 68"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
+    <g clip-path="url(#radial-progress-clip)">
+      {
+        spokes.map((d, i) => (
+          <path
+            class:list={["spoke", i < activeCount && "active"]}
+            d={d}
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style={`--i: ${i}`}
+          />
+        ))
+      }
+    </g>
+    <defs>
+      <clipPath id="radial-progress-clip">
+        <rect
+          width="51"
+          height="51"
+          fill="white"
+          transform="translate(20.5142) rotate(23.7179)"></rect>
+      </clipPath>
+    </defs>
+  </svg>
+  <figcaption>
+    <span class="value">{value}</span>
+    <span class="label">{label}</span>
+  </figcaption>
+</figure>
+
+<style>
+  figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    margin: 0;
+  }
+
+  figcaption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3xs);
+  }
+
+  .value {
+    font-family: var(--font-main);
+    font-size: var(--font-step-1);
+    color: var(--color-ui);
+  }
+
+  .label {
+    font-family: var(--font-main);
+    font-size: var(--font-step-0);
+    color: var(--color-body);
+  }
+
+  .spoke {
+    stroke: #767676;
+  }
+
+  .spoke.active {
+    animation: spoke-fill 0.05s calc(var(--i) * 35ms) both;
+  }
+
+  @keyframes spoke-fill {
+    to {
+      stroke: #fcf098;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spoke.active {
+      animation: none;
+      stroke: #fcf098;
+    }
+  }
+</style>

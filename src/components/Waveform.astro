@@ -3,91 +3,59 @@ interface Label {
   /** 0–1, position along the waveform width */
   position: number;
   text: string;
+  href?: string;
 }
 
 interface Props {
   labels?: Label[];
   variant?: "purple" | "yellow";
+  aspectRatio?: number;
 }
 
-const { labels = [], variant = "purple" } = Astro.props;
+const { labels = [], variant = "purple", aspectRatio = 1 } = Astro.props;
 
-// Generate a waveform path that is active in the middle and flat at the ends.
-// The SVG viewBox is 0 0 800 80; the waveline sits on y=40 (centre).
-const W = 800;
-const H = 80;
-const CY = H / 2;
+// Fixed waveform data (sampled audio waveform). The SVG viewBox is 0 0 100 100.
+const W = 100;
+const H = 100;
 
-// Amplitude envelope: bell curve so edges are flat.
-// amp(x) = maxAmp * exp(-((x/W - 0.5)^2) / (2 * sigma^2))
-const MAX_AMP = 28;
-const SIGMA = 0.18;
-function envelope(x: number): number {
-  const t = x / W - 0.5;
-  return MAX_AMP * Math.exp(-(t * t) / (2 * SIGMA * SIGMA));
-}
+const points: [number, number][] = [
+  [0.0, 50.0], [1.27, 50.82], [2.53, 51.25], [3.8, 50.56], [5.06, 50.45],
+  [6.33, 48.59], [7.59, 44.51], [8.86, 45.57], [10.13, 52.77], [11.39, 56.04],
+  [12.66, 53.87], [13.92, 53.91], [15.19, 52.21], [16.46, 42.29], [17.72, 36.73],
+  [18.99, 46.23], [20.25, 56.58], [21.52, 56.67], [22.78, 57.5], [24.05, 60.14],
+  [25.32, 49.33], [26.58, 32.92], [27.85, 35.22], [29.11, 50.05], [30.38, 55.26],
+  [31.65, 57.04], [32.91, 65.73], [34.18, 62.55], [35.44, 40.36], [36.71, 28.74],
+  [37.97, 39.89], [39.24, 49.36], [40.51, 51.34], [41.77, 63.19], [43.04, 72.77],
+  [44.3, 56.27], [45.57, 33.19], [46.84, 33.2], [48.1, 42.57], [49.37, 43.58],
+  [50.63, 52.74], [51.9, 72.09], [53.16, 70.7], [54.43, 46.87], [55.7, 34.9],
+  [56.96, 39.49], [58.23, 38.89], [59.49, 40.76], [60.76, 60.42], [62.03, 74.34],
+  [63.29, 61.09], [64.56, 43.74], [65.82, 41.97], [67.09, 40.19], [68.35, 34.82],
+  [69.62, 45.74], [70.89, 65.9], [72.15, 67.07], [73.42, 53.37], [74.68, 47.65],
+  [75.95, 45.85], [77.22, 37.7], [78.48, 37.65], [79.75, 52.89], [81.01, 62.81],
+  [82.28, 57.57], [83.54, 52.1], [84.81, 51.13], [86.08, 45.32], [87.34, 39.73],
+  [88.61, 45.27], [89.87, 54.23], [91.14, 55.13], [92.41, 52.52], [93.67, 52.23],
+  [94.94, 50.44], [96.2, 47.0], [97.47, 47.19], [98.73, 49.79], [100.0, 50.48],
+];
 
-// Pseudo-random but deterministic noise via a seeded LCG so the SVG is stable.
-function lcg(seed: number) {
-  let s = seed;
-  return () => {
-    s = (s * 1664525 + 1013904223) & 0xffffffff;
-    return (s >>> 0) / 0xffffffff;
-  };
-}
-const rand = lcg(42);
+// Flatten the amplitude around the centerline so the wave reads as calmer.
+const AMPLITUDE = 0.45;
+const scaledPoints: [number, number][] = points.map(([x, y]) => [
+  x,
+  50 + (y - 50) * AMPLITUDE,
+]);
 
-// Build the path using cubic bezier segments.
-const SEGMENTS = 40;
-const step = W / SEGMENTS;
-
-// Sample y-values at each knot.
-const ys: number[] = Array.from({ length: SEGMENTS + 1 }, (_, i) => {
-  const x = i * step;
-  const amp = envelope(x);
-  // Ensure alternating direction for a natural waveform feel.
-  const sign = i % 2 === 0 ? 1 : -1;
-  const jitter = 0.5 + rand() * 0.5; // 0.5–1.0
-  return CY + sign * amp * jitter;
-});
-
-// Smooth the segment ends using Catmull-Rom → cubic bezier conversion.
-function catmullToBezier(
-  p0: number,
-  p1: number,
-  p2: number,
-  p3: number,
-  t = 0.5
-) {
-  const cp1 = p1 + (p2 - p0) * t;
-  const cp2 = p2 - (p3 - p1) * t;
-  return [cp1, cp2] as const;
-}
-
-let d = `M 0 ${CY}`;
-for (let i = 0; i < SEGMENTS; i++) {
-  const x0 = (i - 1) * step;
-  const x1 = i * step;
-  const x2 = (i + 1) * step;
-  const x3 = (i + 2) * step;
-
-  const y0 = ys[Math.max(0, i - 1)];
-  const y1 = ys[i];
-  const y2 = ys[i + 1];
-  const y3 = ys[Math.min(SEGMENTS, i + 2)];
-
-  const [cp1y, cp2y] = catmullToBezier(y0, y1, y2, y3);
-  const cp1x = x1 + (x2 - x0) * 0.5;
-  const cp2x = x2 - (x3 - x1) * 0.5;
-
-  d += ` C ${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${x2.toFixed(2)} ${y2.toFixed(2)}`;
-}
+const d = scaledPoints
+  .map(([x, y], i) => `${i === 0 ? "M" : "L"} ${x.toFixed(2)},${y.toFixed(2)}`)
+  .join(" ");
 
 // Map label positions to actual SVG x coords and interpolate y.
 function yAtX(x: number): number {
-  const i = Math.min(Math.floor(x / step), SEGMENTS - 1);
-  const t = (x - i * step) / step;
-  return ys[i] * (1 - t) + ys[i + 1] * t;
+  let i = 0;
+  while (i < scaledPoints.length - 2 && scaledPoints[i + 1][0] < x) i++;
+  const [x0, y0] = scaledPoints[i];
+  const [x1, y1] = scaledPoints[i + 1];
+  const t = x1 === x0 ? 0 : (x - x0) / (x1 - x0);
+  return y0 + (y1 - y0) * t;
 }
 
 const labelPoints = labels.map((l, i) => {
@@ -98,7 +66,7 @@ const labelPoints = labels.map((l, i) => {
 });
 ---
 
-<div class="waveform" data-variant={variant}>
+<div class="waveform" >
   <svg
     viewBox={`0 0 ${W} ${H}`}
     preserveAspectRatio="none"
@@ -120,54 +88,34 @@ const labelPoints = labels.map((l, i) => {
       d={d}
       fill="none"
       stroke="currentColor"
-      stroke-width="1.5"
+      stroke-width="0.6"
       stroke-linecap="round"
       stroke-linejoin="round"
+      vector-effect="non-scaling-stroke"
       mask="url(#wf-mask)"
     />
 
   </svg>
 
   {labelPoints.map(({ x, y, id, text }) => (
-    <span
+    <button
       class="label-dot"
       style={`--dx: ${(x / W) * 100}%; --dy: ${(y / H) * 100}%`}
       popovertarget={id}
       aria-haspopup="true"
       aria-label={text}
       tabindex="0"
-      role="button"
     />
   ))}
 
-  {labelPoints.map(({ id, text }) => (
-    <div id={id} popover="manual" class="label-popover">
-      {text}
+  {labelPoints.map(({ id, text, href }) => (
+    <div id={id} popover class="label-popover">
+      {href ? <a href={href} autofocus>{text}</a> : text}
     </div>
   ))}
 </div>
 
-<script>
-  document.querySelectorAll<HTMLSpanElement>(".waveform .label-dot").forEach((dot) => {
-    const targetId = dot.getAttribute("popovertarget")!;
-    const popover = document.getElementById(targetId) as HTMLElement & {
-      showPopover(): void;
-      hidePopover(): void;
-    };
-    if (!popover) return;
-
-    function show() {
-      popover.showPopover({ source: dot });
-    }
-
-    dot.addEventListener("mouseenter", show);
-    dot.addEventListener("mouseleave", () => popover.hidePopover());
-    dot.addEventListener("focus", show);
-    dot.addEventListener("blur", () => popover.hidePopover());
-  });
-</script>
-
-<style>
+<style define:vars={{ "wf-aspect": aspectRatio }}>
   .waveform {
     position: relative;
     width: 100%;
@@ -182,24 +130,37 @@ const labelPoints = labels.map((l, i) => {
     display: block;
     width: 100%;
     height: auto;
+    aspect-ratio: var(--wf-aspect);
     overflow: visible;
   }
 
   .label-dot {
+    appearance: none;
     position: absolute;
     left: var(--dx);
     top: var(--dy);
     translate: -50% -50%;
     width: 7px;
     height: 7px;
+    padding: 0;
+    margin: 0;
+    border: none;
     border-radius: 50%;
-    background: currentColor;
+    background: var(--color-p100);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-p100) 25%, transparent);
     cursor: pointer;
-    transition: scale 150ms ease;
+    transition:
+      scale 150ms ease,
+      box-shadow 150ms ease;
 
     &:hover,
-    &:focus {
+    &:focus-visible {
       scale: 1.5;
+      outline: none;
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-p100) 35%, transparent);
+    }
+
+    &:focus:not(:focus-visible) {
       outline: none;
     }
   }
@@ -220,7 +181,35 @@ const labelPoints = labels.map((l, i) => {
     border: 1px solid var(--color-muted);
     border-radius: 4px;
     white-space: nowrap;
-    pointer-events: none;
     width: max-content;
+
+    opacity: 0;
+    scale: 0.85;
+    transition:
+      opacity 160ms ease,
+      scale 160ms ease,
+      display 160ms allow-discrete,
+      overlay 160ms allow-discrete;
+
+    &:popover-open {
+      opacity: 1;
+      scale: 1;
+
+      @starting-style {
+        opacity: 0;
+        scale: 0.85;
+      }
+    }
+
+    a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+
+      &:hover,
+      &:focus-visible {
+        color: var(--color-p100);
+      }
+    }
   }
 </style>

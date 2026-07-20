@@ -1,0 +1,74 @@
+---
+interface Props {
+  variant?: "purple" | "yellow";
+}
+
+const { variant = "purple" } = Astro.props;
+---
+
+<span class="signal" data-variant={variant}></span>
+
+<style>
+  .signal {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-p100);
+    box-shadow:
+      0 0 8px var(--color-p100),
+      0 0 2px var(--color-p100);
+    animation: pulse 4.3s ease-in-out infinite;
+    animation-play-state: paused;
+    flex-shrink: 0;
+
+    &.in-view {
+      animation-play-state: running;
+    }
+
+    &[data-variant="yellow"] {
+      background: var(--color-y100);
+      box-shadow:
+        0 0 8px var(--color-y100),
+        0 0 2px var(--color-y100);
+    }
+  }
+
+  @keyframes pulse {
+    0%,
+    100% { opacity: 0.2; }
+    8%   { opacity: 1; }
+    14%  { opacity: 0.25; }
+    22%  { opacity: 0.75; }
+    30%  { opacity: 0.15; }
+    55%  { opacity: 0.9; }
+    62%  { opacity: 0.2; }
+    75%  { opacity: 0.55; }
+    85%  { opacity: 0.15; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .signal {
+      animation: none;
+      box-shadow: 0 0 0 2px var(--color-p100);
+
+      &[data-variant="yellow"] {
+        box-shadow: 0 0 0 2px var(--color-y100);
+      }
+    }
+  }
+</style>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        entry.target.classList.toggle("in-view", entry.isIntersecting);
+      }
+    },
+    { rootMargin: "25% 0px 25% 0px" },
+  );
+
+  document.querySelectorAll<HTMLElement>(".signal").forEach((signal) => {
+    observer.observe(signal);
+  });
+</script>
