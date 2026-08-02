@@ -8,6 +8,7 @@ interface Props {
   id?: string;
   signalVariant?: "purple" | "yellow";
   [key: string]: any;
+  withSpacing?: boolean;
 }
 
 const {
@@ -15,11 +16,16 @@ const {
   class: className = "",
   id,
   signalVariant,
+  withSpacing = true,
   ...rest
 } = Astro.props as Props;
 ---
 
-<Tag {id} class={`section-title ${className}`.trim()} {...rest}>
+<Tag
+  {id}
+  class:list={["section-title", { spaced: withSpacing }, className]}
+  {...rest}
+>
   <Signal variant={signalVariant} />
   <slot />
 </Tag>
@@ -31,10 +37,12 @@ const {
     gap: var(--space-s);
     font-family: var(--font-main);
     font-size: var(--font-step-0);
-    padding-bottom: var(--space-m);
-    padding-top: var(--space-m);
     color: var(--color-body);
     font-weight: normal;
     text-transform: uppercase;
+
+    &.spaced {
+      margin-block: var(--space-m);
+    }
   }
 </style>

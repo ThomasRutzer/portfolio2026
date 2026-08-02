@@ -4,16 +4,21 @@ import Jack from "@components/Jack.astro";
 interface Props {
   width?: "sm" | "md" | "lg" | "full";
   direction?: "normal" | "reverse";
+  withSpacing?: boolean;
 }
 
-const { width = "md", direction = "normal" } = Astro.props;
+const {
+  width = "md",
+  direction = "normal",
+  withSpacing = true,
+} = Astro.props;
 ---
 
 <div
   class:list={[
     "connector",
     `width-${width}`,
-    { reverse: direction === "reverse" },
+    { reverse: direction === "reverse", spaced: withSpacing },
   ]}
   aria-hidden="true"
 >
@@ -29,10 +34,14 @@ const { width = "md", direction = "normal" } = Astro.props;
   .connector {
     position: relative;
     height: var(--space-2xl-3xl);
-    margin: 0 auto;
+    margin-inline: auto;
 
     &.reverse {
       transform: scaleX(-1);
+    }
+
+    &.spaced {
+      margin-block: var(--space-m);
     }
 
     &.width-sm {

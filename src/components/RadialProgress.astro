@@ -78,6 +78,7 @@ const activeCount = Math.round((clamped / 100) * spokes.length);
     align-items: center;
     gap: var(--space-xs);
     margin: 0;
+    flex: 1;
   }
 
   figcaption {
@@ -97,6 +98,8 @@ const activeCount = Math.round((clamped / 100) * spokes.length);
     font-family: var(--font-main);
     font-size: var(--font-step-0);
     color: var(--color-body);
+    max-width: 100%;
+    text-wrap: balance;
   }
 
   .spoke {

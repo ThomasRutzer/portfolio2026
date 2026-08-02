@@ -5,25 +5,25 @@ import SectionTitle from "./SectionTitle.astro";
 ---
 
 <div class="container">
-  <Grid class="top-line">
-    <GridItem span={{ base: 2, sm: 2, md: 2 }}>
-      <SectionTitle>Intro</SectionTitle>
+  <Grid class="top-line" data-hero-top-line>
+    <GridItem span={{ base: 2, sm: 2, md: 2 }} align="start">
+      <SectionTitle withSpacing={false}>Intro</SectionTitle>
     </GridItem>
     <GridItem span={{ base: 2, sm: 2, md: 1 }} justify="center" align="start">
       <span class="initials">T R</span>
     </GridItem>
-    <GridItem span={{ base: 2, sm: 2, md: 3 }} justify="end" align="center">
+    <GridItem span={{ base: 2, sm: 2, md: 3 }} justify="end" align="start">
       <p class="location" data-hero-location>50.93825° N, 6.89799° E</p>
     </GridItem>
   </Grid>
 </div>
-<div class="container-narrow">
+<section class="container-narrow">
   <h1 data-hero-title>
     Hej, I'm <span class="name">Thomas</span>. I architect & engineer <span
       class="highlight">unique interfaces & interactions</span
     > for the browser platform.
   </h1>
-</div>
+</section>
 
 <noscript>
   <style>
@@ -47,18 +47,16 @@ import SectionTitle from "./SectionTitle.astro";
     font-family: var(--font-main);
     font-size: var(--font-step-0);
     margin-bottom: var(--space-m);
+    padding-bottom: var(--space-m);
+    padding-top: var(--space-m);
   }
 
   .initials {
     text-transform: uppercase;
-    padding-bottom: var(--space-m);
-    padding-top: var(--space-m);
     display: inline-block;
   }
 
   .location {
-    padding-bottom: var(--space-m);
-    padding-top: var(--space-m);
     text-align: right;
     font-feature-settings: "tnum";
   }
@@ -83,6 +81,11 @@ import SectionTitle from "./SectionTitle.astro";
     -webkit-text-stroke: var(--stroke-width)
       color-mix(in srgb, var(--color-y100) var(--stroke-opacity), transparent);
   }
+
+  h1 :global(.word) {
+    display: inline-block;
+    white-space: nowrap;
+  }
 </style>
 
 <script>
@@ -91,6 +94,7 @@ import SectionTitle from "./SectionTitle.astro";
 
   gsap.registerPlugin(SplitText);
 
+  const topLine = document.querySelector<HTMLElement>("[data-hero-top-line]");
   const heading = document.querySelector<HTMLElement>("[data-hero-title]");
   const nameEl = heading?.querySelector<HTMLElement>(".name");
   const highlightEl = heading?.querySelector<HTMLElement>(".highlight");
@@ -107,6 +111,17 @@ import SectionTitle from "./SectionTitle.astro";
   }
 
   const mm = gsap.matchMedia();
+
+  if (topLine) {
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.from(topLine, {
+        opacity: 0,
+        filter: "blur(4px)",
+        duration: 1,
+        ease: "sine.out",
+      });
+    });
+  }
 
   if (locationEl) {
     const target = { lat: location.lat, lng: location.lng };
@@ -135,9 +150,12 @@ import SectionTitle from "./SectionTitle.astro";
       highlight: rootStyles.getPropertyValue("--color-y100").trim(),
     };
 
-    const nameSplit = SplitText.create(nameEl, { type: "chars", aria: "auto" });
+    const nameSplit = SplitText.create(nameEl, {
+      type: "words, chars",
+      aria: "auto",
+    });
     const highlightSplit = SplitText.create(highlightEl, {
-      type: "chars",
+      type: "words, chars",
       aria: "auto",
     });
 

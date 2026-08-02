@@ -259,6 +259,7 @@ const { cases } = Astro.props;
   section[role="tabpanel"] {
     display: flex;
     flex-direction: column-reverse;
+    gap: var(--space-m);
 
     @container tablist (min-width: 900px) {
       flex-direction: row;
@@ -292,15 +293,11 @@ const { cases } = Astro.props;
     }
 
     .case-metrics {
-      background: var(--color-panel);
-      border-radius: var(--border-radius-s);
-      border: 1px solid var(--color-muted);
       display: flex;
       flex: 1;
       flex-direction: column;
       gap: var(--space-m);
       margin-top: -7px;
-      padding: var(--space-s);
     }
 
     .radial-metrics {

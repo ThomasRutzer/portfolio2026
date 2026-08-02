@@ -2,6 +2,7 @@
 import About from "@components/About.astro";
 import CaseTabs from "@components/CaseTabs.astro";
 import FocusAreas from "@components/FocusAreas.astro";
+import Footer from "@components/Footer.astro";
 import Hero from "@components/Hero.astro";
 import SectionConnector from "@components/SectionConnector.astro";
 import SectionTitle from "@components/SectionTitle.astro";
@@ -14,24 +15,20 @@ const cases = await getCollection("cases");
 <Layout title="Home Page">
   <Hero />
 
-  {
-    cases.length > 0 && (
-      <section>
-        <div class="container">
-          <SectionTitle>Work</SectionTitle>
-        </div>
-        <CaseTabs cases={cases} />
-      </section>
-    )
-  }
+  <section>
+    <div class="container">
+      <SectionTitle withSpacing={true}>Work</SectionTitle>
+    </div>
+    <CaseTabs cases={cases} />
+  </section>
+
   <div class="container-narrow">
     <SectionConnector />
   </div>
   <section class="container">
     <FocusAreas />
   </section>
-  <div class="container-narrow connector-attached">
-    <SectionConnector width="sm" direction="reverse" />
-  </div>
-  <About />
+
+  <About connector={true} />
+  <Footer />
 </Layout>

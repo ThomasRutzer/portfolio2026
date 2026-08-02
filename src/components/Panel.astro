@@ -1,6 +1,6 @@
 ---
 interface Props {
-  name: string;
+  name?: string;
   rev?: string;
   class?: string;
 }
@@ -15,10 +15,14 @@ const { name, rev, class: className } = Astro.props;
   <div class="panel-shadow"></div>
 
   <div class="panel-content">
-    <header class="panel-header">
-      <span class="panel-name">{name}</span>
-      {rev && <span class="panel-rev">{rev}</span>}
-    </header>
+    {
+      (name || rev) && (
+        <header class="panel-header">
+          {name && <span class="panel-name">{name}</span>}
+          {rev && <span class="panel-rev">{rev}</span>}
+        </header>
+      )
+    }
 
     <slot />
   </div>

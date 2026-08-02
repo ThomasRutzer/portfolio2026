@@ -1,0 +1,226 @@
+---
+interface LinkItem {
+  label: string;
+  href?: string;
+  copy?: string;
+}
+
+interface FooterColumn {
+  title: string;
+  items: LinkItem[];
+}
+
+interface Props {
+  columns?: FooterColumn[];
+}
+
+const {
+  columns = [
+    {
+      title: "Connect",
+      items: [{ label: "hi@thomasrutzer.dev", copy: "hi@thomasrutzer.dev" }],
+    },
+  ],
+} = Astro.props as Props;
+
+const year = new Date().getFullYear();
+---
+
+<footer class="container">
+  <div class="columns">
+    {
+      columns.map((column) => (
+        <div class="column">
+          <p class="title">{column.title}</p>
+          <ul>
+            {column.items.map((item) => (
+              <li>
+                {item.copy ? (
+                  <button
+                    type="button"
+                    class="clipboard-field"
+                    data-copy={item.copy}
+                  >
+                    <span class="label">{item.label}</span>
+                    <span class="confirm">Copied to clipboard</span>
+                  </button>
+                ) : item.href ? (
+                  <a href={item.href}>{item.label}</a>
+                ) : (
+                  <span class="static">{item.label}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="bottom-bar">
+    <span class="flow" aria-hidden="true">∿ ⟶ /\ ⟶ ⊙</span>
+  </div>
+</footer>
+
+<style>
+  footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+    margin-top: var(--space-l);
+    padding-block: var(--space-l);
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: space-between;
+    gap: var(--space-l);
+
+    @media (max-width: 680px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .title {
+    margin: 0 0 var(--space-s);
+    color: var(--color-body);
+    font-size: var(--font-step-0);
+    text-transform: uppercase;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+  }
+
+  a,
+  .static,
+  .clipboard-field {
+    color: var(--color-ui);
+    font-weight: 600;
+  }
+
+  a {
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-p100);
+    }
+  }
+
+  .clipboard-field {
+    display: grid;
+    align-items: center;
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-p100);
+    }
+
+    span {
+      grid-area: 1 / 1;
+      overflow: hidden;
+      white-space: nowrap;
+      transform-origin: left center;
+    }
+
+    .confirm {
+      opacity: 0;
+      filter: blur(4px);
+      transform: scale(0.94);
+    }
+  }
+
+  .bottom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    border-top: 1px solid var(--color-muted);
+    justify-content: center;
+    padding-top: var(--space-m);
+
+    .flow {
+      color: var(--color-p200);
+      letter-spacing: 0.4em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--color-body);
+      font-size: var(--font-step-0);
+      text-align: right;
+      line-height: 1.4;
+    }
+
+    svg {
+      width: 2rem;
+      height: 2rem;
+      flex-shrink: 0;
+      fill: var(--color-ui);
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  document
+    .querySelectorAll<HTMLButtonElement>(".clipboard-field")
+    .forEach((button) => {
+      const text = button.dataset.copy;
+      const label = button.querySelector<HTMLElement>(".label");
+      const confirm = button.querySelector<HTMLElement>(".confirm");
+      if (!text || !label || !confirm) return;
+
+      let timeline: gsap.core.Timeline | null = null;
+      let timeout: ReturnType<typeof setTimeout>;
+
+      function play(reverse: boolean) {
+        timeline?.kill();
+        timeline = gsap.timeline();
+
+        timeline.to(
+          label,
+          {
+            opacity: reverse ? 1 : 0,
+            filter: reverse ? "blur(0px)" : "blur(4px)",
+            scale: reverse ? 1 : 0.94,
+            duration: 0.25,
+            ease: "power2.inOut",
+          },
+          0,
+        );
+
+        timeline.to(
+          confirm,
+          {
+            opacity: reverse ? 0 : 1,
+            filter: reverse ? "blur(4px)" : "blur(0px)",
+            scale: reverse ? 0.94 : 1,
+            duration: 0.25,
+            ease: "power2.inOut",
+          },
+          reverse ? 0 : 0.15,
+        );
+      }
+
+      button.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(text);
+        clearTimeout(timeout);
+        play(false);
+        timeout = setTimeout(() => play(true), 2000);
+      });
+    });
+</script>
