@@ -25,8 +25,8 @@ export default defineConfig({
       options: {
         variants: [
           {
-            src: ["./src/assets/fonts/Geist-VariableFont_wght.ttf"],
-            weight: "100 900",
+            src: ["./src/assets/fonts/GeistMono[wght].ttf"],
+            weight: "400",
             style: "normal",
           },
         ],
