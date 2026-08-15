@@ -43,7 +43,7 @@ import SectionTitle from "./SectionTitle.astro";
 
 <style>
   .top-line {
-    color: var(--color-body);
+    color: var(--color-foreground);
     font-family: var(--font-main);
     font-size: var(--font-step-0);
     margin-bottom: var(--space-m);
@@ -67,12 +67,13 @@ import SectionTitle from "./SectionTitle.astro";
     font-family: var(--font-title);
     font-size: var(--font-step-4);
     text-transform: uppercase;
+    color: var(--color-foreground);
   }
 
   .name {
     color: transparent;
     -webkit-text-stroke: var(--stroke-width)
-      color-mix(in srgb, var(--color-p100) var(--stroke-opacity), transparent);
+      color-mix(in srgb, var(--color-p300) var(--stroke-opacity), transparent);
     white-space: nowrap;
   }
 
@@ -146,7 +147,7 @@ import SectionTitle from "./SectionTitle.astro";
   if (nameEl && highlightEl) {
     const rootStyles = getComputedStyle(document.documentElement);
     const colors = {
-      name: rootStyles.getPropertyValue("--color-p100").trim(),
+      name: rootStyles.getPropertyValue("--color-p300").trim(),
       highlight: rootStyles.getPropertyValue("--color-y100").trim(),
     };
 

@@ -42,9 +42,9 @@
   --space-s-l: clamp(1.125rem, 0.7258rem + 1.7742vw, 2.5rem);
 
   /* Colors */
-  --color-bg: #0c0c0e;
-  --color-panel: #111118;
-  --color-p100: #b0aafd;
+  --color-bg: #abb0ba;
+  --color-foreground: #111118;
+  --color-p100: #a29cf9;
   --color-p200: #8a84d8;
   --color-p300: #6a64a8;
   --color-p400: #3a3460;
@@ -52,7 +52,6 @@
   --color-y200: #a8a040;
   --color-y300: #504800;
   --color-ui: #d8d6d0;
-  --color-body: #7a7a86;
   --color-muted: #2e2e3a;
   --color-inactive: #1a1a22;
 
@@ -63,6 +62,7 @@
 
   /* Effects */
   --border-radius-s: 4px;
+  --border-stroke-width: 1px;
 }
 
 body {

@@ -7,11 +7,7 @@ interface Props {
   withSpacing?: boolean;
 }
 
-const {
-  width = "md",
-  direction = "normal",
-  withSpacing = true,
-} = Astro.props;
+const { width = "md", direction = "normal", withSpacing = true } = Astro.props;
 ---
 
 <div
@@ -71,7 +67,7 @@ const {
 
     path {
       fill: none;
-      stroke: var(--color-body);
+      stroke: var(--color-foreground);
       stroke-width: 4;
     }
   }
