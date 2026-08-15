@@ -1,0 +1,47 @@
+{
+  "title": "Locker Webapp",
+  "oneLineDescription": "A UI for self-service parcel pickup and drop-off",
+  "description": "An on-device UI for parcel lockers, handling automated pickup and drop-off across first- and last-mile delivery for one of the worlds largest logistics companies. The webapp is designed to run on a variety of hardware platforms, including specific sensor connections",
+  "date": "2026-01-01",
+  "tags": [],
+  "icon": "twin",
+  "status": "deployed",
+  "businessCase": [
+    {
+      "label": "Lockers deployed",
+      "value": "101",
+      "progress": 80
+    },
+    {
+      "label": "hardware platforms supported",
+      "value": "2",
+      "progress": 100
+    },
+    { "label": "Months until live", "value": "4", "progress": 100 }
+  ],
+  "stats": [
+    { "value": "100+", "label": "Lockers live" },
+    { "value": "2", "label": "Hardware types supported" },
+    { "value": "3", "label": "Avg. developers" },
+    { "value": "8+", "label": "Months development" }
+  ],
+  "team": [
+    {
+      "label": "Scrum Team: 1 designer, 3 software engineers, 1 PO, 1 Infrastructure engineer",
+      "value": "6 people",
+      "progress": 60
+    },
+    {
+      "label": "Different hardware platforms supported",
+      "value": "2",
+      "progress": 100
+    }
+  ],
+  "tech": [
+    "Custom harness skills to model xState from Figma flows",
+    "Safe transactions with partial offline support with service workers and background sync",
+    "Planned updates while continuous operation without interrupting customers",
+    "Hosted in the cloud",
+    "Otel-conform tracing and metrics with Prometheus and visible in Grafana"
+  ]
+}

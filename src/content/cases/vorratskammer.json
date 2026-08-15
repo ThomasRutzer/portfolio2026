@@ -14,26 +14,27 @@
   "image": "/images/cases/sonic-palette.jpg",
   "link": "https://sonic-palette.example.com",
   "status": "deployed",
-  "metrics": [
-    { "label": "Keyboard Coverage", "value": "100%", "progress": 100 },
-    { "label": "Browser Compatibility", "value": "94%", "progress": 94 },
-    { "label": "Accessibility Score", "value": "91%", "progress": 91 }
+  "businessCase": [
+    { "label": "Grant Budget Utilised", "value": "92%", "progress": 92 },
+    { "label": "Collective Adoption Rate", "value": "80%", "progress": 80 },
+    { "label": "Delivery Timeline Adherence", "value": "100%", "progress": 100 }
   ],
-  "achievements": [
+  "team": [
     {
-      "label": "Launched at Berlin sound-art festival",
+      "label": "Core team: 1 developer + 1 sound artist",
+      "value": "2 people",
+      "progress": 100
+    },
+    {
+      "label": "Accessibility consultant review passed",
       "value": "100%",
       "progress": 100
     },
     {
-      "label": "Zero-mouse accessibility audit passed",
-      "value": "100%",
+      "label": "Weekly pairing with collective's lead artist",
+      "value": "12 sessions",
       "progress": 100
-    },
-    {
-      "label": "Adopted by collective for live sets",
-      "value": "80%",
-      "progress": 80
     }
-  ]
+  ],
+  "tech": ["TypeScript", "Web Audio API", "WebMIDI API"]
 }

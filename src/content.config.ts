@@ -7,7 +7,8 @@ const caseCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    date: z.string().optional(),
+    oneLineDescription: z.string().optional(),
+    date: z.string().transform((str) => new Date(str)),
     tags: z
       .array(
         z.object({
@@ -17,14 +18,13 @@ const caseCollection = defineCollection({
       )
       .optional(),
     icon: z.enum(["twin", "orbit", "eclipse"]),
-    image: z.string().optional(),
     link: z.string().optional(),
     stats: z
       .array(z.object({ value: z.string(), label: z.string() }))
       .max(4)
       .optional(),
     status: z.enum(["planned", "progress", "deployed", "archived"]),
-    metrics: z
+    businessCase: z
       .array(
         z.object({
           label: z.string(),
@@ -33,7 +33,7 @@ const caseCollection = defineCollection({
         }),
       )
       .optional(),
-    achievements: z
+    team: z
       .array(
         z.object({
           label: z.string(),
@@ -42,16 +42,7 @@ const caseCollection = defineCollection({
         }),
       )
       .optional(),
-    repoData: z
-      .object({
-        packageId: z.string(),
-        match: z.number().min(0).max(100),
-        verified: z.string(),
-        region: z.string(),
-        queueLabel: z.string(),
-        latency: z.string(),
-      })
-      .optional(),
+    tech: z.array(z.string()),
   }),
 });
 
