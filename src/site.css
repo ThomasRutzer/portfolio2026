@@ -60,6 +60,12 @@
   --container-max-narrow: 64rem;
   --container-padding: var(--space-l);
 
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+
   /* Effects */
   --border-radius-s: 4px;
   --border-stroke-width: 1px;
