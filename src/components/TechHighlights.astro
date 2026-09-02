@@ -1,32 +1,21 @@
 ---
 interface Props {
-  packageId: string;
-  match: number; // 0–100
-  verified: string;
-  region: string;
-  queueLabel: string;
-  latency: string;
+  tech: string[];
 }
 
-const { packageId, match, verified, region, queueLabel, latency } =
-  Astro.props;
-const clampedMatch = Math.max(0, Math.min(100, match));
+const { tech } = Astro.props;
 ---
 
-<dl class="repo-data" aria-label="Repository sync status">
-  <div class="row">
-    <dt>PKG #{packageId}</dt>
-    <dd>MATCHED · {clampedMatch}%</dd>
-  </div>
-  <div class="row">
-    <dt><span class="arrow" aria-hidden="true">→</span> {verified}</dt>
-    <dd>REGION {region}</dd>
-  </div>
-  <div class="row">
-    <dt>QUEUE {queueLabel}<span class="cursor" aria-hidden="true"></span></dt>
-    <dd>{latency}</dd>
-  </div>
-</dl>
+<ul class="repo-data" aria-label="Tech stack">
+  {
+    tech.map((t, i) => (
+      <li class="row">
+        <span>{t}</span>
+        {i === tech.length - 1 && <span class="cursor" aria-hidden="true" />}
+      </li>
+    ))
+  }
+</ul>
 
 <style>
   .repo-data {
@@ -34,6 +23,7 @@ const clampedMatch = Math.max(0, Math.min(100, match));
     flex-direction: column;
     gap: var(--space-2xs);
     padding: var(--space-s);
+    padding-inline-start: var(--space-l);
     background: var(--color-panel);
     border: 1px solid var(--color-muted);
     border-radius: var(--border-radius-s);
@@ -41,31 +31,17 @@ const clampedMatch = Math.max(0, Math.min(100, match));
   }
 
   .row {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-m);
-  }
+    list-style: ">  ";
 
-  dt,
-  dd {
-    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-    font-size: var(--font-step-0);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin: 0;
-    white-space: nowrap;
-  }
+    &::marker {
+      color: var(--color-p100);
+    }
 
-  dt {
-    color: var(--color-ui);
-  }
-
-  dd {
-    color: var(--color-body);
-  }
-
-  .arrow {
-    color: var(--color-p100);
+    span:first-child {
+      font-size: var(--font-step-0);
+      text-transform: uppercase;
+      color: var(--color-ui);
+    }
   }
 
   .cursor {

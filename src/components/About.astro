@@ -11,8 +11,11 @@ import SectionTitle from "./SectionTitle.astro";
 <section class="about container">
   <SectionConnector width="sm" direction="reverse" withSpacing={false} />
   <Panel>
-    <SectionTitle tag="p" signalVariant="yellow" withSpacing={false}
-      >About Me</SectionTitle
+    <SectionTitle
+      tag="p"
+      signalVariant="yellow"
+      variant="light"
+      withSpacing={false}>About Me</SectionTitle
     >
     <div class="rig">
       <figure>
@@ -33,17 +36,17 @@ import SectionTitle from "./SectionTitle.astro";
               text: "Intro",
               href: "https://thomasrutzer.dev",
             },
-            { position: 0.6, text: "Drop", href: "https://thomasrutzer.dev" },
+            { position: 0.4, text: "Drop", href: "https://thomasrutzer.dev" },
             {
               position: 0.85,
-              text: "Outro",
-              href: "https://thomasrutzer.dev",
+              text: "hi@thomasrutzer.dev",
+              copy: "hi@thomasrutzer.dev",
             },
           ]}
         />
       </div>
 
-      <Progress label="Level" value="33%" progress={33} />
+      <Progress label="Experience" value="12 years" progress={28} />
     </div>
   </Panel>
 </section>
@@ -51,6 +54,7 @@ import SectionTitle from "./SectionTitle.astro";
 <style>
   .about {
     margin-top: var(--space-l);
+    color: var(--color-ui);
   }
 
   .rig {
@@ -86,7 +90,7 @@ import SectionTitle from "./SectionTitle.astro";
         width: 0.5rem;
         height: 0.5rem;
         border-radius: 50%;
-        background: #fff;
+        background: var(--color-ui);
       }
     }
 
@@ -105,7 +109,7 @@ import SectionTitle from "./SectionTitle.astro";
       object-fit: cover;
       border-radius: 50%;
       outline: 1px solid var(--color-ui);
-      outline-offset: -8px;
+      outline-offset: -16px;
       object-fit: cover;
       animation: spin 20s linear infinite;
 
