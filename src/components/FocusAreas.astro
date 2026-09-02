@@ -7,7 +7,7 @@ import SectionTitle from "./SectionTitle.astro";
     <SectionTitle tag="p">ARCHITECTURE</SectionTitle>
     <h2>
       I ARCHITECT LARGE-SCALE ENTERPRISE WEB APPLICATIONS TO SHIP ROBUST
-      SOLUTIONS THAT ARE <span class="highlight-p">SAFE & MAINTAINABLE</span>.
+      SOLUTIONS THAT ARE <span class="highlight-p">SAFE & MAINTAINABLE</span>
     </h2>
     <p>
       My role includes aligning cross-functional teams — defining technology
@@ -21,7 +21,7 @@ import SectionTitle from "./SectionTitle.astro";
     <SectionTitle tag="p" signalVariant="yellow">UI ENGINEERING</SectionTitle>
     <h2>
       I ENGINEER DETAIL-RICH USER INTERFACES TO SHIP MEANINGFUL SOLUTIONS THAT
-      ARE <span class="highlight-y">EASY TO USE & ENJOYABLE</span>.
+      ARE <span class="highlight-y">EASY TO USE & ENJOYABLE</span>
     </h2>
     <p>
       My work bridges design and engineering — translating complex requirements
@@ -36,24 +36,27 @@ import SectionTitle from "./SectionTitle.astro";
   .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-l);
+    gap: var(--space-2xl);
   }
 
   @media (max-width: 680px) {
     .grid {
       grid-template-columns: 1fr;
+      gap: var(--space-l);
     }
   }
 
-  article h2 {
-    font-family: var(--font-title);
-    font-size: var(--font-step-3);
-    text-transform: uppercase;
-    margin-block: var(--space-m) var(--space-s);
+  article {
+    color: var(--color-foreground);
+    & h2 {
+      font-size: var(--font-step-2);
+      text-transform: uppercase;
+      margin-block: var(--space-m) var(--space-s);
+    }
   }
 
   .highlight-p {
-    color: var(--color-p100);
+    color: var(--color-p300);
   }
 
   .highlight-y {
