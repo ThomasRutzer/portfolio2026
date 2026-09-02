@@ -1,0 +1,99 @@
+---
+interface Props {
+  label: string;
+  copy: string;
+}
+
+const { label, copy } = Astro.props;
+---
+
+<button type="button" class="clipboard-field" data-copy={copy}>
+  <span class="label">{label}</span>
+  <span class="confirm">Copied to clipboard</span>
+</button>
+
+<style>
+  .clipboard-field {
+    display: grid;
+    align-items: center;
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-p100);
+    }
+
+    span {
+      grid-area: 1 / 1;
+      overflow: hidden;
+      white-space: nowrap;
+      transform-origin: left center;
+    }
+
+    .confirm {
+      opacity: 0;
+      filter: blur(4px);
+      transform: scale(0.94);
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  document
+    .querySelectorAll<HTMLButtonElement>(".clipboard-field")
+    .forEach((button) => {
+      const text = button.dataset.copy;
+      const label = button.querySelector<HTMLElement>(".label");
+      const confirm = button.querySelector<HTMLElement>(".confirm");
+      if (!text || !label || !confirm) return;
+
+      let timeline: gsap.core.Timeline | null = null;
+      let timeout: ReturnType<typeof setTimeout>;
+
+      function play(reverse: boolean) {
+        timeline?.kill();
+        timeline = gsap.timeline();
+
+        timeline.to(
+          label,
+          {
+            opacity: reverse ? 1 : 0,
+            filter: reverse ? "blur(0px)" : "blur(4px)",
+            scale: reverse ? 1 : 0.94,
+            duration: 0.25,
+            ease: "power2.inOut",
+          },
+          0,
+        );
+
+        timeline.to(
+          confirm,
+          {
+            opacity: reverse ? 0 : 1,
+            filter: reverse ? "blur(4px)" : "blur(0px)",
+            scale: reverse ? 0.94 : 1,
+            duration: 0.25,
+            ease: "power2.inOut",
+          },
+          reverse ? 0 : 0.15,
+        );
+      }
+
+      button.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(text);
+        clearTimeout(timeout);
+        play(false);
+        timeout = setTimeout(() => play(true), 2000);
+      });
+    });
+</script>

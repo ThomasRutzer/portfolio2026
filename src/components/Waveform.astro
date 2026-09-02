@@ -1,9 +1,12 @@
 ---
+import ClipboardButton from "@components/ClipboardButton.astro";
+
 interface Label {
   /** 0–1, position along the waveform width */
   position: number;
   text: string;
   href?: string;
+  copy?: string;
 }
 
 interface Props {
@@ -97,21 +100,26 @@ const labelPoints = labels.map((l, i) => {
 
   </svg>
 
-  {labelPoints.map(({ x, y, id, text }) => (
-    <button
-      class="label-dot"
-      style={`--dx: ${(x / W) * 100}%; --dy: ${(y / H) * 100}%`}
-      popovertarget={id}
-      aria-haspopup="true"
-      aria-label={text}
-      tabindex="0"
-    />
-  ))}
-
-  {labelPoints.map(({ id, text, href }) => (
-    <div id={id} popover class="label-popover">
-      {href ? <a href={href} autofocus>{text}</a> : text}
-    </div>
+  {labelPoints.map(({ x, y, id, text, href, copy }) => (
+    <>
+      <button
+        class="label-dot"
+        style={`--dx: ${(x / W) * 100}%; --dy: ${(y / H) * 100}%; --anchor: --${id}`}
+        popovertarget={id}
+        aria-haspopup="true"
+        aria-label={text}
+        tabindex="0"
+      />
+      <div id={id} popover="manual" class="label-popover" style={`--anchor: --${id}`}>
+        {copy ? (
+          <ClipboardButton label={text} copy={copy} />
+        ) : href ? (
+          <a href={href} autofocus>{text}</a>
+        ) : (
+          text
+        )}
+      </div>
+    </>
   ))}
 </div>
 
@@ -136,6 +144,7 @@ const labelPoints = labels.map((l, i) => {
 
   .label-dot {
     appearance: none;
+    anchor-name: var(--anchor);
     position: absolute;
     left: var(--dx);
     top: var(--dy);
@@ -170,6 +179,7 @@ const labelPoints = labels.map((l, i) => {
     margin: unset;
     inset: unset;
     /* CSS Anchor Positioning — Chrome 125+ */
+    position-anchor: var(--anchor);
     bottom: calc(anchor(top) + 8px);
     left: anchor(center);
     translate: -50% 0;
@@ -203,8 +213,17 @@ const labelPoints = labels.map((l, i) => {
 
     a {
       color: inherit;
-      text-decoration: underline;
+      text-decoration: none;
       text-underline-offset: 2px;
+
+      &:hover,
+      &:focus-visible {
+        color: var(--color-p100);
+      }
+    }
+
+    :global(.clipboard-field) {
+      color: inherit;
 
       &:hover,
       &:focus-visible {
