@@ -10,22 +10,22 @@ const { progress, label, value, size = 68 } = Astro.props;
 
 // Clockwise from 12 o'clock
 const spokes = [
-  "M 33.6035 12.353 L 33.6035 20.853",
-  "M 42.1509 14.1479 L 38.7319 21.93",
-  "M 42.5283 24.6781 L 48.6908 18.5156",
-  "M 45.3645 29.0219 L 53.4853 25.8587",
-  "M 46.3535 33.603 L 54.8535 33.603",
-  "M 45.2764 38.7314 L 53.0584 42.1504",
-  "M 42.5283 42.5278 L 48.6908 48.6903",
-  "M 38.1846 45.3643 L 41.3478 53.485",
-  "M 33.6035 46.353 L 33.6035 54.853",
-  "M 28.4751 45.2764 L 25.0561 53.0584",
-  "M 18.5161 48.6903 L 24.6786 42.5278",
-  "M 13.7214 41.3476 L 21.8422 38.1843",
-  "M 12.1035 33.103 L 20.6035 33.103",
-  "M 14.1484 25.0557 L 21.9305 28.4747",
-  "M 18.5161 18.5156 L 24.6786 24.6781",
-  "M 25.8589 13.7212 L 29.0221 21.842",
+  { cx: 33.6035, cy: 16.603 },
+  { cx: 40.4414, cy: 18.03895 },
+  { cx: 45.60955, cy: 21.59685 },
+  { cx: 49.4249, cy: 27.4403 },
+  { cx: 50.6035, cy: 33.603 },
+  { cx: 49.1674, cy: 40.4409 },
+  { cx: 45.60955, cy: 45.60905 },
+  { cx: 39.7662, cy: 49.42465 },
+  { cx: 33.6035, cy: 50.603 },
+  { cx: 26.7656, cy: 49.1674 },
+  { cx: 21.59735, cy: 45.60905 },
+  { cx: 17.7818, cy: 39.76595 },
+  { cx: 16.3535, cy: 33.103 },
+  { cx: 18.03945, cy: 26.7652 },
+  { cx: 21.59735, cy: 21.59685 },
+  { cx: 27.4405, cy: 17.7816 },
 ];
 
 const clamped = Math.max(0, Math.min(100, progress));
@@ -43,13 +43,11 @@ const activeCount = Math.round((clamped / 100) * spokes.length);
   >
     <g clip-path="url(#radial-progress-clip)">
       {
-        spokes.map((d, i) => (
-          <path
+        spokes.map(({ cx, cy }, i) => (
+          <circle
             class:list={["spoke", i < activeCount && "active"]}
-            d={d}
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            cx={cx}
+            cy={cy}
             style={`--i: ${i}`}
           />
         ))
@@ -60,7 +58,7 @@ const activeCount = Math.round((clamped / 100) * spokes.length);
         <rect
           width="51"
           height="51"
-          fill="white"
+          fill="currentColor"
           transform="translate(20.5142) rotate(23.7179)"></rect>
       </clipPath>
     </defs>
@@ -79,6 +77,11 @@ const activeCount = Math.round((clamped / 100) * spokes.length);
     gap: var(--space-xs);
     margin: 0;
     flex: 1;
+
+    & svg {
+      border-radius: 50%;
+      border: 2px solid var(--color-bg);
+    }
   }
 
   figcaption {
@@ -86,40 +89,46 @@ const activeCount = Math.round((clamped / 100) * spokes.length);
     flex-direction: column;
     align-items: center;
     gap: var(--space-3xs);
+    color: var(--color-ui);
   }
 
   .value {
     font-family: var(--font-main);
     font-size: var(--font-step-1);
-    color: var(--color-ui);
   }
 
   .label {
     font-family: var(--font-main);
     font-size: var(--font-step-0);
-    color: var(--color-foreground);
     max-width: 100%;
     text-wrap: balance;
   }
 
   .spoke {
-    stroke: #767676;
+    r: 0.6;
+    fill: var(--color-ui);
   }
 
   .spoke.active {
-    animation: spoke-fill 0.05s calc(var(--i) * 35ms) both;
+    animation: spoke-fill 0.15s calc(var(--i) * 35ms) linear both;
   }
 
   @keyframes spoke-fill {
+    from {
+      r: 1;
+      fill: var(--color-ui);
+    }
     to {
-      stroke: #fcf098;
+      r: 2;
+      fill: var(--color-y100);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .spoke.active {
       animation: none;
-      stroke: #fcf098;
+      r: 1.7;
+      fill: var(--color-y100);
     }
   }
 </style>

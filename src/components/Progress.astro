@@ -7,6 +7,10 @@ interface Props {
 
 const { label, value, progress } = Astro.props;
 const clamped = Math.max(0, Math.min(100, progress));
+
+const BAR_COUNT = 40;
+const activeCount = Math.round((clamped / 100) * BAR_COUNT);
+const bars = Array.from({ length: BAR_COUNT }, (_, i) => ({ active: i < activeCount }));
 ---
 
 <figure>
@@ -15,17 +19,22 @@ const clamped = Math.max(0, Math.min(100, progress));
     <span class="value">{value}</span>
   </figcaption>
   <div
+    class="bars"
     role="progressbar"
     aria-valuenow={clamped}
     aria-valuemin={0}
     aria-valuemax={100}
     aria-label={label}
   >
-    <div class="fill"></div>
+    {
+      bars.map((bar, i) => (
+        <span class:list={["bar", { active: bar.active }]} style={`--i: ${i}`} />
+      ))
+    }
   </div>
 </figure>
 
-<style define:vars={{ progress: `${clamped}%` }}>
+<style>
   figure {
     display: flex;
     flex-direction: column;
@@ -44,7 +53,7 @@ const clamped = Math.max(0, Math.min(100, progress));
     font-size: var(--font-step-0);
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-foreground);
+    color: var(--color-ui);
   }
 
   .value {
@@ -53,33 +62,47 @@ const clamped = Math.max(0, Math.min(100, progress));
     color: var(--color-ui);
   }
 
-  [role="progressbar"] {
-    height: 4px;
-    background: var(--color-inactive);
-    border-radius: 2px;
-    overflow: visible;
-    position: relative;
+  .bars {
+    display: flex;
+    gap: 2px;
+    height: var(--space-s);
   }
 
-  .fill {
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    width: var(--progress);
-    border-radius: 2px;
-    background: linear-gradient(to right, var(--color-p400), var(--color-p100));
-    animation: fill-grow 0.6s ease-out both;
+  .bar {
+    flex: 1;
+    min-width: 2px;
+    border-radius: 1px;
+    background: var(--color-ui);
+
+    &.active {
+      animation: bar-fill 0.4s calc(var(--i) * 25ms) ease both,
+        bar-glow 3s calc(var(--i) * 90ms) ease-in-out infinite;
+    }
   }
 
-  @keyframes fill-grow {
+  @keyframes bar-fill {
     from {
-      width: 0%;
+      background: var(--color-ui);
+    }
+    to {
+      background: var(--color-p100);
+    }
+  }
+
+  @keyframes bar-glow {
+    0%,
+    100% {
+      filter: brightness(1);
+    }
+    50% {
+      filter: brightness(1.35);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .fill {
+    .bar.active {
       animation: none;
+      background: var(--color-p100);
     }
   }
 </style>
