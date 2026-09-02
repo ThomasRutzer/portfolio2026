@@ -1,6 +1,7 @@
 ---
 import Signal from "@components/Signal.astro";
 import CaseIcon from "@components/CaseIcon.astro";
+import CaseDeco from "@components/CaseDeco.astro";
 import CaseStats from "@components/CaseStats.astro";
 import CaseStatus from "@components/CaseStatus.astro";
 import CaseTags from "@components/CaseTags.astro";
@@ -9,7 +10,7 @@ import Panel from "@components/Panel.astro";
 import type { CollectionEntry } from "astro:content";
 import RadialProgress from "./RadialProgress.astro";
 import Progress from "./Progress.astro";
-import RepoData from "./RepoData.astro";
+import TechHighlights from "./TechHighlights.astro";
 
 interface Props {
   cases: CollectionEntry<"cases">[];
@@ -35,7 +36,7 @@ const { cases } = Astro.props;
           </header>
 
           <footer aria-hidden="true">
-            <i class="jack" />
+            <Jack class="jack" />
             <span>Out</span>
           </footer>
         </button>
@@ -62,48 +63,51 @@ const { cases } = Astro.props;
         hidden={i !== 0}
         class="container-narrow"
       >
-        <div class="case-description">
-          <h3>{c.data.title}</h3>
-          {c.data.description && <p>{c.data.description}</p>}
-          {c.data.stats && <CaseStats stats={c.data.stats} />}
-        </div>
-        <aside aria-hidden="true" class="case-metrics">
-          <Panel name={c.data.title} rev={c.data.status.toUpperCase()}>
+        <Panel>
+          <div class="case-panel-header">
             <CaseStatus status={c.data.status} />
-            {c.data.metrics && (
-              <div class="radial-metrics">
-                {c.data.metrics.map((m) => (
-                  <RadialProgress
-                    label={m.label}
-                    value={m.value}
-                    progress={m.progress}
-                  />
-                ))}
-              </div>
-            )}
-            {c.data.achievements && (
-              <div class="achievements">
-                {c.data.achievements.map((a) => (
-                  <Progress
-                    label={a.label}
-                    value={a.value}
-                    progress={a.progress}
-                  />
-                ))}
-              </div>
-            )}
-            {c.data.repoData && (
-              <RepoData
-                packageId={c.data.repoData.packageId}
-                match={c.data.repoData.match}
-                verified={c.data.repoData.verified}
-                region={c.data.repoData.region}
-                queueLabel={c.data.repoData.queueLabel}
-                latency={c.data.repoData.latency}
-              />
-            )}
-          </Panel>
-        </aside>
+            <span class="case-year">{c.data.date.getFullYear()}</span>
+          </div>
+
+          <div class="case-panel">
+            <div class="case-description">
+              <h3>{c.data.title}</h3>
+              {c.data.description && <p>{c.data.description}</p>}
+              {c.data.tech && c.data.tech.length > 0 && (
+                <TechHighlights tech={c.data.tech} />
+              )}
+            </div>
+
+            <aside aria-hidden="true" class="case-metrics">
+              {c.data.businessCase && (
+                <div class="radial-metrics">
+                  {c.data.businessCase.map((m) => (
+                    <RadialProgress
+                      label={m.label}
+                      value={m.value}
+                      progress={m.progress}
+                    />
+                  ))}
+                </div>
+              )}
+              {c.data.team && (
+                <div class="achievements">
+                  {c.data.team.map((a) => (
+                    <Progress
+                      label={a.label}
+                      value={a.value}
+                      progress={a.progress}
+                    />
+                  ))}
+                </div>
+              )}
+            </aside>
+          </div>
+
+          <div class="case-deco-footer" aria-hidden="true">
+            <CaseDeco icon={c.data.icon} />
+          </div>
+        </Panel>
       </section>
     ))
   }
@@ -133,14 +137,18 @@ const { cases } = Astro.props;
     gap: var(--space-xs);
     padding: var(--space-m);
     background: var(--color-panel);
-    border: 1px solid var(--color-muted);
+    border: var(--border-stroke-width) solid var(--color-muted);
     border-right: none;
     text-align: left;
     cursor: pointer;
-    color: inherit;
 
     &:first-child {
       border-radius: var(--border-radius-s) 0 0 var(--border-radius-s);
+
+      @container tablist (min-width: 900px) {
+        border-radius: var(--border-radius-s);
+        border-right: 1px solid var(--color-muted);
+      }
     }
 
     &:last-child {
@@ -153,14 +161,12 @@ const { cases } = Astro.props;
       border-right: 1px solid var(--color-muted);
     }
 
-    &:not([aria-selected="true"]) header > span {
-      opacity: 0;
-    }
-
     header {
       display: flex;
       flex-direction: column;
       gap: var(--space-xs);
+      color: var(--color-foreground);
+      align-items: center;
 
       @container tablist (min-width: 900px) {
         flex-direction: row;
@@ -170,7 +176,7 @@ const { cases } = Astro.props;
     h2 {
       font-family: var(--font-main);
       font-size: var(--font-step-1);
-      color: var(--color-body);
+      color: var(--color-foreground);
     }
 
     footer {
@@ -181,34 +187,26 @@ const { cases } = Astro.props;
       left: 50%;
       bottom: -10px;
       transform: translateX(-50%) translateY(50%);
-
-      i {
-        display: block;
-        width: 12px;
-        aspect-ratio: 1;
-        border-radius: 50%;
-        border: 1px solid var(--color-muted);
-        background: var(--color-bg);
-      }
-
-      span {
-        font-family: var(--font-main);
-        font-size: var(--font-step-0);
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--color-body);
-      }
+      font-size: var(--font-step-0);
+      color: var(--color-muted);
+      text-transform: uppercase;
     }
 
-    &[aria-selected="true"] footer i {
+    &[aria-selected="true"] footer :global(.jack) {
       border-color: var(--color-p100);
       background: var(--color-p100);
     }
 
-    &.cable-target footer i {
+    &.cable-target footer :global(.jack):not([aria-selected="true"]) {
       border-color: var(--color-y100);
       box-shadow: 0 0 0 4px
         color-mix(in srgb, var(--color-y100) 30%, transparent);
+    }
+
+    &.cable-target[aria-selected="true"] footer :global(.jack) {
+      border-color: var(--color-p300);
+      box-shadow: 0 0 0 4px
+        color-mix(in srgb, var(--color-p100) 30%, transparent);
     }
   }
 
@@ -224,7 +222,7 @@ const { cases } = Astro.props;
 
   .cable {
     fill: none;
-    stroke: var(--color-body);
+    stroke: var(--color-foreground);
     stroke-width: 4;
   }
 
@@ -235,9 +233,9 @@ const { cases } = Astro.props;
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: var(--color-body);
+    background: var(--color-foreground);
     border: 3px solid var(--color-bg);
-    box-shadow: 0 0 0 1px var(--color-body);
+    box-shadow: 0 0 0 1px var(--color-foreground);
     cursor: grab;
     touch-action: none;
     pointer-events: auto;
@@ -253,21 +251,39 @@ const { cases } = Astro.props;
     position: relative;
     margin-top: var(--space-2xl-3xl);
     margin-left: 75%;
-    z-index: 1;
+    z-index: var(--z-dropdown);
+    display: block;
   }
 
   section[role="tabpanel"] {
-    display: flex;
-    flex-direction: column-reverse;
-    gap: var(--space-m);
-
-    @container tablist (min-width: 900px) {
-      flex-direction: row;
-      gap: var(--space-2xl);
-    }
+    margin-top: -7px;
 
     &[hidden] {
       display: none;
+    }
+
+    .case-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .case-year {
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: var(--font-step-0);
+      letter-spacing: 0.1em;
+      color: var(--color-ui);
+    }
+
+    .case-panel {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: var(--space-m);
+
+      @container tablist (min-width: 900px) {
+        flex-direction: row;
+        gap: var(--space-2xl);
+      }
     }
 
     h3 {
@@ -283,6 +299,9 @@ const { cases } = Astro.props;
 
     .case-description {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-m);
     }
 
     .achievements {
@@ -292,12 +311,16 @@ const { cases } = Astro.props;
       margin-top: var(--space-l);
     }
 
+    .case-deco-footer {
+      display: flex;
+      justify-content: center;
+    }
+
     .case-metrics {
       display: flex;
       flex: 1;
       flex-direction: column;
       gap: var(--space-m);
-      margin-top: -7px;
     }
 
     .radial-metrics {

@@ -50,11 +50,24 @@ const STAGES: { value: Status; label: string }[] = [
     font-family: var(--font-main);
     font-size: var(--font-step-0);
     text-transform: uppercase;
-    color: var(--color-foreground);
+    color: var(--color-ui);
   }
 
   .stage[aria-current="true"] .label {
     color: var(--color-p100);
     font-weight: 600;
+    animation: activate-label 0.4s ease-out 0.5s backwards;
+  }
+
+  @keyframes activate-label {
+    from {
+      color: var(--color-ui);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stage[aria-current="true"] .label {
+      animation: none;
+    }
   }
 </style>
