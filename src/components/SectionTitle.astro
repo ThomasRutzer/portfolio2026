@@ -6,6 +6,7 @@ interface Props {
   tag?: HTMLTag;
   class?: string;
   id?: string;
+  variant?: "light" | "dark";
   signalVariant?: "purple" | "yellow";
   [key: string]: any;
   withSpacing?: boolean;
@@ -15,6 +16,7 @@ const {
   tag: Tag = "h2",
   class: className = "",
   id,
+  variant = "dark",
   signalVariant,
   withSpacing = true,
   ...rest
@@ -23,7 +25,14 @@ const {
 
 <Tag
   {id}
-  class:list={["section-title", { spaced: withSpacing }, className]}
+  class:list={[
+    "section-title",
+    {
+      spaced: withSpacing,
+      dark: variant === "dark",
+    },
+    className,
+  ]}
   {...rest}
 >
   <Signal variant={signalVariant} />
@@ -37,12 +46,16 @@ const {
     gap: var(--space-s);
     font-family: var(--font-main);
     font-size: var(--font-step-0);
-    color: var(--color-foreground);
+    color: var(--color-ui);
     font-weight: normal;
     text-transform: uppercase;
 
     &.spaced {
       margin-block: var(--space-m);
+    }
+
+    &.dark {
+      color: var(--color-foreground);
     }
   }
 </style>
