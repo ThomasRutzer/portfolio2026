@@ -82,6 +82,11 @@ h1 {
   line-height: var(--font-step-4-line-height);
 }
 
+h2 {
+  font-family: var(--font-title);
+  line-height: var(--font-step-3-line-height);
+}
+
 .container {
   max-width: min(
     var(--container-max, 82.5rem),

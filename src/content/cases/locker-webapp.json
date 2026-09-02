@@ -27,9 +27,9 @@
   ],
   "team": [
     {
-      "label": "Scrum Team: 1 designer, 3 software engineers, 1 PO, 1 Infrastructure engineer",
-      "value": "6 people",
-      "progress": 60
+      "label": "Scrum Team size",
+      "value": "8 people",
+      "progress": 89
     },
     {
       "label": "Different hardware platforms supported",
