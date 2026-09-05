@@ -16,8 +16,6 @@ npm run check-ts   # check .astro files
 npx prettier --write .  # format all files
 ```
 
-No test suite is configured.
-
 ## Constraints
 
 - **Node.js >=24.17.0 required.** Bun and Deno are not supported.
@@ -39,6 +37,7 @@ This is an Astro 6 portfolio site — no UI framework (React/Vue/etc.), only `.a
 - Layout: `--container-max: 80rem`, `.container` utility class centers content
 - **No BEM or class-based selectors in component styles.** Use Astro scoped `<style>` blocks with HTML tag selectors and native CSS nesting. Classes are only acceptable for stateful modifiers (e.g. `.active`, `.hidden`) or when targeting a slot child that needs a stable hook — never for structural naming.
 - **NEVER** use inline style attributes
+- Interactions should be emphasised with sound effects
 
 **Fonts** — two custom fonts loaded via Astro's font API ([astro.config.mjs](astro.config.mjs)):
 
