@@ -2,6 +2,7 @@
   "title": "Example Case Study",
   "description": "This is an example case study demonstrating the JSON data collection structure.",
   "date": "2026-01-15",
+  "by": "SprintEins",
   "tags": [
     { "label": "Audio Engineering", "type": "engineering" },
     { "label": "Creative Coding", "type": "engineering" },

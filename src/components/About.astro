@@ -23,7 +23,6 @@ import SectionTitle from "./SectionTitle.astro";
           <Image src={image} alt="" aria-hidden="true" class="sleeve" />
           <Image src={image} alt="Operator" class="vinyl" />
         </div>
-        <figcaption>Operator</figcaption>
       </figure>
 
       <div class="wave">
@@ -59,7 +58,7 @@ import SectionTitle from "./SectionTitle.astro";
 
   .rig {
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: auto auto auto;
     align-items: center;
     gap: var(--space-l);
 
@@ -73,7 +72,7 @@ import SectionTitle from "./SectionTitle.astro";
     flex-direction: column;
     align-items: center;
     gap: var(--space-xs);
-    margin: 0;
+    margin: var(--space-m);
 
     .portrait {
       position: relative;
@@ -116,13 +115,6 @@ import SectionTitle from "./SectionTitle.astro";
       @media (prefers-reduced-motion: reduce) {
         animation: none;
       }
-    }
-
-    figcaption {
-      font-size: var(--font-step-0);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--color-foreground);
     }
   }
 

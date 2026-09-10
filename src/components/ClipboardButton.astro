@@ -48,6 +48,9 @@ const { label, copy } = Astro.props;
 
 <script>
   import { gsap } from "gsap";
+  import { getSFX } from "@lib/sfx";
+
+  const sfx = getSFX();
 
   document
     .querySelectorAll<HTMLButtonElement>(".clipboard-field")
@@ -91,6 +94,7 @@ const { label, copy } = Astro.props;
 
       button.addEventListener("click", async () => {
         await navigator.clipboard.writeText(text);
+        sfx.play("copy");
         clearTimeout(timeout);
         play(false);
         timeout = setTimeout(() => play(true), 2000);

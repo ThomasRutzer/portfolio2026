@@ -2,21 +2,24 @@
 import Grid from "./Grid.astro";
 import GridItem from "./GridItem.astro";
 import SectionTitle from "./SectionTitle.astro";
+import SoundToggle from "./SoundToggle.astro";
 ---
 
-<div class="container">
+<header class="container">
   <Grid class="top-line" data-hero-top-line>
     <GridItem span={{ base: 2, sm: 2, md: 2 }} align="start">
       <SectionTitle withSpacing={false}>Intro</SectionTitle>
     </GridItem>
     <GridItem span={{ base: 2, sm: 2, md: 1 }} justify="center" align="start">
-      <span class="initials">T R</span>
+      <SoundToggle />
     </GridItem>
     <GridItem span={{ base: 2, sm: 2, md: 3 }} justify="end" align="start">
-      <p class="location" data-hero-location>50.93825° N, 6.89799° E</p>
+      <div class="status-line">
+        <p class="location" data-hero-location>50.93825° N, 6.89799° E</p>
+      </div>
     </GridItem>
   </Grid>
-</div>
+</header>
 <section class="container-narrow">
   <h1 data-hero-title>
     Hej, I'm <span class="name">Thomas</span>. I architect & engineer <span
@@ -51,9 +54,10 @@ import SectionTitle from "./SectionTitle.astro";
     padding-top: var(--space-m);
   }
 
-  .initials {
-    text-transform: uppercase;
-    display: inline-block;
+  .status-line {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
   }
 
   .location {
@@ -103,14 +107,6 @@ import SectionTitle from "./SectionTitle.astro";
     "[data-hero-location]",
   );
 
-  const location = { lat: 50.93825, lng: 6.89799 };
-
-  function renderLocation() {
-    if (locationEl) {
-      locationEl.textContent = `${location.lat.toFixed(5)}° N, ${location.lng.toFixed(5)}° E`;
-    }
-  }
-
   const mm = gsap.matchMedia();
 
   if (topLine) {
@@ -121,26 +117,6 @@ import SectionTitle from "./SectionTitle.astro";
         duration: 1,
         ease: "sine.out",
       });
-    });
-  }
-
-  if (locationEl) {
-    const target = { lat: location.lat, lng: location.lng };
-    location.lat -= 3;
-    location.lng -= 3;
-    renderLocation();
-
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      gsap
-        .timeline({ delay: 0.2, defaults: { duration: 2, ease: "sine.inOut" } })
-        .to(location, { lat: target.lat, onUpdate: renderLocation }, 0)
-        .to(location, { lng: target.lng, onUpdate: renderLocation }, 0.15);
-    });
-
-    mm.add("(prefers-reduced-motion: reduce)", () => {
-      location.lat = target.lat;
-      location.lng = target.lng;
-      renderLocation();
     });
   }
 
@@ -164,7 +140,7 @@ import SectionTitle from "./SectionTitle.astro";
       gsap.set([nameSplit.chars, highlightSplit.chars], { opacity: 0 });
 
       gsap
-        .timeline({ delay: 0.2, defaults: { duration: 2, ease: "sine.inOut" } })
+        .timeline({ defaults: { duration: 1.6, ease: "sine.inOut" } })
         .to(
           nameSplit.chars,
           { opacity: 1, stagger: { each: 0.05, ease: "sine.inOut" } },

@@ -1,0 +1,26 @@
+---
+interface Props {
+  date: Date;
+  by: string;
+}
+
+const { date, by } = Astro.props;
+---
+
+<div class="case-year-by">
+  <span class="case-year">{date.getFullYear()}</span>
+  <span class="case-by">{by}</span>
+</div>
+
+<style>
+  div {
+    display: flex;
+    font-size: var(--font-step-0);
+    letter-spacing: 0.1em;
+    color: var(--color-ui);
+    text-number: tabular-nums;
+    flex-direction: column;
+    align-items: flex-end;
+    text-transform: uppercase;
+  }
+</style>

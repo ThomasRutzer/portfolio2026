@@ -44,9 +44,10 @@ This is an Astro 6 portfolio site — no UI framework (React/Vue/etc.), only `.a
 - `PPNeueMachinaInktrap` → `--font-title` (used for `h1` and hero text)
 - `PPNeueMontrealText` → `--font-main` (body font)
 
-**Components**
+**Interaction**
 
 - All interactive UI elements must be reachable via Keyboard
+- All interactive UI elements should at least be checked for sound effects
 
 ### Variants
 

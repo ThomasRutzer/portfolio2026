@@ -1,8 +1,8 @@
 {
   "title": "Locker Webapp",
-  "oneLineDescription": "A UI for self-service parcel pickup and drop-off",
   "description": "An on-device UI for parcel lockers, handling automated pickup and drop-off across first- and last-mile delivery for one of the worlds largest logistics companies. The webapp is designed to run on a variety of hardware platforms, including specific sensor connections",
   "date": "2026-01-01",
+  "by": "SprintEins",
   "tags": [],
   "icon": "twin",
   "status": "deployed",

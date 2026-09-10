@@ -11,6 +11,7 @@ import type { CollectionEntry } from "astro:content";
 import RadialProgress from "./RadialProgress.astro";
 import Progress from "./Progress.astro";
 import TechHighlights from "./TechHighlights.astro";
+import CaseYearBy from "./CaseYearBy.astro";
 
 interface Props {
   cases: CollectionEntry<"cases">[];
@@ -31,7 +32,7 @@ const { cases } = Astro.props;
           tabindex={i === 0 ? 0 : -1}
         >
           <header>
-            <CaseIcon icon={c.data.icon} />
+            <CaseIcon icon={c.data.icon} animate={i === 0} />
             <h2>{c.data.title}</h2>
           </header>
 
@@ -66,7 +67,7 @@ const { cases } = Astro.props;
         <Panel>
           <div class="case-panel-header">
             <CaseStatus status={c.data.status} />
-            <span class="case-year">{c.data.date.getFullYear()}</span>
+            <CaseYearBy date={new Date(c.data.date)} by={c.data.by} />
           </div>
 
           <div class="case-panel">
@@ -141,24 +142,25 @@ const { cases } = Astro.props;
     border-right: none;
     text-align: left;
     cursor: pointer;
+    transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
+
+    @container tablist (min-width: 900px) {
+      border-radius: var(--border-radius-s);
+      border-right: 1px solid var(--color-muted);
+    }
 
     &:first-child {
-      border-radius: var(--border-radius-s) 0 0 var(--border-radius-s);
-
-      @container tablist (min-width: 900px) {
-        border-radius: var(--border-radius-s);
-        border-right: 1px solid var(--color-muted);
+      @container tablist (max-width: 899px) {
+        border-radius: var(--border-radius-s) 0 0 var(--border-radius-s);
       }
     }
 
     &:last-child {
       border-right: 1px solid var(--color-muted);
-      border-radius: 0 var(--border-radius-s) var(--border-radius-s) 0;
-    }
 
-    @container tablist (min-width: 900px) {
-      border-radius: var(--border-radius-s);
-      border-right: 1px solid var(--color-muted);
+      @container tablist (max-width: 899px) {
+        border-radius: 0 var(--border-radius-s) var(--border-radius-s) 0;
+      }
     }
 
     header {
@@ -195,6 +197,12 @@ const { cases } = Astro.props;
     &[aria-selected="true"] footer :global(.jack) {
       border-color: var(--color-p100);
       background: var(--color-p100);
+    }
+
+    footer :global(.jack) {
+      transition:
+        border-color 120ms ease,
+        box-shadow 120ms ease;
     }
 
     &.cable-target footer :global(.jack):not([aria-selected="true"]) {
@@ -258,6 +266,13 @@ const { cases } = Astro.props;
   section[role="tabpanel"] {
     margin-top: -7px;
 
+    @container tablist (max-width: 680px) {
+      max-width: min(
+        var(--container-max-narrow, 64rem),
+        calc(100% - var(--container-padding, 4%) * 2 + var(--space-m) * 2)
+      );
+    }
+
     &[hidden] {
       display: none;
     }
@@ -265,20 +280,13 @@ const { cases } = Astro.props;
     .case-panel-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-    }
-
-    .case-year {
-      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-      font-size: var(--font-step-0);
-      letter-spacing: 0.1em;
-      color: var(--color-ui);
+      align--locationitems: center;
     }
 
     .case-panel {
       display: flex;
       flex-direction: column-reverse;
-      gap: var(--space-m);
+      gap: var(--space-xl);
 
       @container tablist (min-width: 900px) {
         flex-direction: row;
@@ -308,7 +316,6 @@ const { cases } = Astro.props;
       display: flex;
       flex-direction: column;
       gap: var(--space-s);
-      margin-top: var(--space-l);
     }
 
     .case-deco-footer {
@@ -321,6 +328,10 @@ const { cases } = Astro.props;
       flex: 1;
       flex-direction: column;
       gap: var(--space-m);
+
+      @container tablist (min-width: 900px) {
+        gap: var(--space-l);
+      }
     }
 
     .radial-metrics {
@@ -337,10 +348,13 @@ const { cases } = Astro.props;
 </style>
 
 <script>
+  import { getSFX } from "@lib/sfx";
   import { gsap } from "gsap";
   import { Draggable } from "gsap/Draggable";
 
   gsap.registerPlugin(Draggable);
+
+  const ui = getSFX();
 
   const tablist = document.querySelector<HTMLElement>("[role=tablist]");
   const wrapper = tablist?.parentElement ?? null;
@@ -356,7 +370,8 @@ const { cases } = Astro.props;
 
   function activateByClickOrKey(tab: HTMLElement) {
     const index = tabs.indexOf(tab);
-    if (index < 0) return;
+    if (index < 0 || index === activeIndex) return;
+    ui.play("select");
     activate(index, { focus: true });
   }
 
@@ -393,6 +408,13 @@ const { cases } = Astro.props;
     opts?: { ease?: string },
   ) => void = () => {};
 
+  function setIconAnimating(tab: HTMLElement, animate: boolean) {
+    const icon = tab.querySelector(".case-icon");
+    icon?.dispatchEvent(
+      new CustomEvent("caseicon:toggle", { detail: { animate } }),
+    );
+  }
+
   function activate(index: number, opts: { focus: boolean; ease?: string }) {
     const changed = index !== activeIndex;
 
@@ -404,6 +426,11 @@ const { cases } = Astro.props;
       );
       if (panel) panel.hidden = i !== index;
     });
+
+    if (changed) {
+      setIconAnimating(tabs[activeIndex], false);
+      setIconAnimating(tabs[index], true);
+    }
 
     activeIndex = index;
     if (changed && opts.focus) tabs[index].focus();
@@ -527,7 +554,10 @@ const { cases } = Astro.props;
       if (hoveredIndex >= 0)
         tabs[hoveredIndex].classList.remove("cable-target");
       hoveredIndex = index;
-      if (hoveredIndex >= 0) tabs[hoveredIndex].classList.add("cable-target");
+      if (hoveredIndex >= 0) {
+        tabs[hoveredIndex].classList.add("cable-target");
+        ui.play("snap");
+      }
     }
 
     Draggable.create(plug, {
@@ -535,6 +565,7 @@ const { cases } = Astro.props;
       bounds: wrapper,
       onDragStart() {
         gsap.killTweensOf(plug);
+        ui.play("drag-start");
       },
       onDrag() {
         const point = { x: this.x, y: this.y };
@@ -547,8 +578,13 @@ const { cases } = Astro.props;
         setHover(-1);
 
         if (target >= 0 && target !== activeIndex) {
+          ui.play("connect");
           activate(target, { focus: false, ease: "power2.out" });
+        } else if (target >= 0) {
+          ui.play("drop");
+          settleCableTo(activeIndex, { ease: "power2.out" });
         } else {
+          ui.play("invalid-drop");
           settleCableTo(activeIndex, { ease: "power2.out" });
         }
       },

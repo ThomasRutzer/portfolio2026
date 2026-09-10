@@ -3,90 +3,210 @@ export type CaseIconVariant = "twin" | "orbit" | "eclipse";
 
 interface Props {
   icon: CaseIconVariant;
+  animate?: boolean;
 }
 
-const { icon } = Astro.props;
+const { icon, animate = false } = Astro.props;
 ---
 
-{
-  icon === "twin" && (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle cx="1.2" cy="1.2" r="1.2" fill="currentColor" />
-      <circle cx="1.2" cy="5.9998" r="1.2" fill="currentColor" />
-      <circle cx="1.2" cy="10.7996" r="1.2" fill="currentColor" />
-      <circle cx="5.9998" cy="1.2" r="1.2" fill="currentColor" />
-      <circle cx="5.9998" cy="5.9998" r="1.2" fill="currentColor" />
-      <circle cx="5.9998" cy="10.7996" r="1.2" fill="currentColor" />
-      <circle cx="10.8001" cy="1.2" r="1.2" fill="currentColor" />
-      <circle cx="10.8001" cy="5.9998" r="1.2" fill="currentColor" />
-      <circle cx="10.8001" cy="10.7996" r="1.2" fill="currentColor" />
-    </svg>
-  )
-}
-{
-  icon === "orbit" && (
-    <svg
-      width="13"
-      height="13"
-      viewBox="0 0 13 13"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M1.49316 0.0820312L0.493164 6.08203" stroke="currentColor" />
-      <path d="M4.49316 0.0820312L3.49316 6.08203" stroke="currentColor" />
-      <path d="M7.49316 0.0820312L6.49316 6.08203" stroke="currentColor" />
-      <path d="M12.4932 0.0820312L11.4932 6.08203" stroke="currentColor" />
-      <path
-        d="M0.493165 6.08203L0.993164 9.08203L1.49316 12.082"
-        stroke="currentColor"
-      />
-      <path
-        d="M3.49316 6.08203L3.99316 9.08203L4.49316 12.082"
-        stroke="currentColor"
-      />
-      <path
-        d="M6.49316 6.08203L6.99316 9.08203L7.49316 12.082"
-        stroke="currentColor"
-      />
-      <path
-        d="M11.4932 6.08203L11.9932 9.08203L12.4932 12.082"
-        stroke="currentColor"
-      />
-    </svg>
-  )
-}
-{
-  icon === "eclipse" && (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle cx="6" cy="6" r="5.5" stroke="currentColor" />
-      <circle
-        cx="7"
-        cy="5"
-        r="4"
-        stroke="currentColor"
-        stroke-linejoin="bevel"
-        stroke-dasharray="0.5 0.5"
-      />
-      <circle cx="7.5" cy="4.5" r="3" stroke="currentColor" />
-    </svg>
-  )
-}
+<span
+  class="case-icon"
+  data-icon={icon}
+  data-animate={animate ? "true" : "false"}
+>
+  {
+    icon === "twin" && (
+      <svg
+        width="36"
+        height="36"
+        viewBox="0 0 36 36"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="18" cy="5" r="3" fill="currentColor" />
+        <circle cx="5" cy="17" r="3" fill="currentColor" />
+        <circle cx="18" cy="29" r="3" fill="currentColor" />
+        <circle cx="5" cy="5" r="3" fill="currentColor" />
+        <circle cx="18" cy="17" r="3" fill="currentColor" />
+        <circle cx="5" cy="29" r="3" fill="currentColor" />
+        <circle cx="31" cy="5" r="3" fill="currentColor" />
+        <circle cx="31" cy="17" r="3" fill="currentColor" />
+        <circle cx="31" cy="29" r="3" fill="currentColor" />
+      </svg>
+    )
+  }
+  {
+    icon === "orbit" && (
+      <svg
+        width="36"
+        height="36"
+        viewBox="0 0 36 36"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M16.2451 27.2373C16.6222 27.2817 17.0056 27.3076 17.3945 27.3076C17.6829 27.3076 17.968 27.2921 18.25 27.2676L17.5234 35.9766L16.5264 35.8936L15.5303 35.8096L16.2451 27.2373ZM30.4121 31.0576L29.6484 31.7041L28.8857 32.3506L23.0654 25.4844C23.6094 25.0948 24.1121 24.6518 24.5654 24.1611L30.4121 31.0576ZM9.77539 23.6426C10.1952 24.1657 10.6662 24.6454 11.1826 25.0723L4.92578 30.3584L4.28027 29.5947L3.63477 28.8301L9.77539 23.6426ZM36.043 18.4844L35.96 19.4805L35.877 20.4775L26.917 19.7314C27.0666 19.0913 27.1536 18.4277 27.1719 17.7461L36.043 18.4844ZM7.70312 16.126C7.64274 16.5675 7.61035 17.0183 7.61035 17.4766C7.61035 17.6952 7.61981 17.9119 7.63379 18.127L0 17.4932L0.0830078 16.4961L0.166016 15.5L7.70312 16.126ZM31.7627 6.38281L32.4082 7.14648L25.9092 12.6348C25.578 12.0481 25.1888 11.4996 24.749 10.9961L31.1182 5.61914L31.7627 6.38281ZM11.9648 9.29688C11.4093 9.66992 10.8942 10.0988 10.4268 10.5752L5.63184 4.91895L7.15723 3.62598L11.9648 9.29688ZM20.5127 0.166016L19.8613 7.96094C19.2241 7.79462 18.5617 7.69071 17.8809 7.65723L18.5205 0L20.5127 0.166016Z"
+          fill="currentColor"
+        />
+        <path
+          d="M24.1348 20.7005L24.5671 19.7991L10.955 13.2191L10.5227 14.1206L10.0905 15.022L23.7025 21.602L24.1348 20.7005ZM24.4568 14.9014L24.1237 13.9569L9.86786 18.9752L10.2009 19.9197L10.534 20.8643L24.7898 15.846L24.4568 14.9014ZM20.6033 10.572L19.7025 10.1372L13.1538 23.8141L14.0546 24.2489L14.9554 24.6837L21.5042 11.0068L20.6033 10.572ZM19.8261 24.5723L20.7691 24.2441L15.7746 9.92035L14.8316 10.2486L13.8887 10.5768L18.8832 24.9005L19.8261 24.5723Z"
+          fill="currentColor"
+        />
+      </svg>
+    )
+  }
+  {
+    icon === "eclipse" && (
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="17" stroke="currentColor" stroke-width="2" />
+        <circle
+          cx="21"
+          cy="15"
+          r="12"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linejoin="bevel"
+          stroke-dasharray="1 1"
+        />
+        <circle
+          cx="22.5"
+          cy="13.5"
+          r="9.5"
+          stroke="currentColor"
+          stroke-width="2"
+        />
+      </svg>
+    )
+  }
+</span>
 
 <style>
+  .case-icon {
+    display: inline-flex;
+  }
+
   svg {
-    width: 24px;
-    height: 24px;
+    width: 36px;
+    height: 36px;
+  }
+
+  svg circle,
+  svg path {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .case-icon[data-icon="orbit"] svg path {
+    transform-box: view-box;
+    transform-origin: center;
   }
 </style>
+
+<script>
+  import { gsap } from "gsap";
+
+  const prefersReducedMotion = () =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function buildTimeline(el: HTMLElement): gsap.core.Timeline | null {
+    const variant = el.dataset.icon;
+    const svg = el.querySelector("svg");
+    if (!svg) return null;
+
+    const tl = gsap.timeline({ paused: true });
+
+    if (variant === "twin") {
+      const dots = svg.querySelectorAll("circle");
+      const opacityValues = [0.8, 0.7, 0.6, 0.5, 0.4, 0.5, 0.6, 0.7, 0.8];
+
+      gsap.set(dots, { transformOrigin: "50% 50%" });
+      tl.to(dots, {
+        opacity: (i) => opacityValues[i],
+        scale: 0.93,
+        duration: 0.9,
+        ease: "power1.inOut",
+        stagger: { each: 0.05, from: "start", repeat: 1, yoyo: true },
+      });
+    } else if (variant === "orbit") {
+      const lines = svg.querySelectorAll("path");
+      const rotationValues = [18, -28];
+
+      gsap.set(lines, { transformOrigin: "50% 50%" });
+
+      tl.to(lines, {
+        opacity: 0.4,
+        rotation: (i) => rotationValues[i] ?? 0,
+        duration: 1.7,
+        ease: "power1.inOut",
+        stagger: { each: 0.09, from: "start", repeat: 1, yoyo: true },
+      });
+    } else if (variant === "eclipse") {
+      const rings = svg.querySelectorAll("circle");
+      const ringScales = [0.9, 0.7, 0.5];
+      const opacityValues = [1, 0.7, 0.3];
+      const fillOpacityValues = [0, 0, 1];
+
+      tl.to(rings, {
+        scale: (i) => ringScales[i],
+        opacity: (i) => opacityValues[i],
+        attr: { fillOpacity: (i: number) => fillOpacityValues[i] },
+        duration: 1.7,
+        ease: "power1.inOut",
+        stagger: { each: 0.08, from: "start", repeat: 1, yoyo: true },
+      });
+    } else {
+      return null;
+    }
+
+    // Minimal motion blur: a soft blur pulse timed to the fastest part of
+    // the motion (the middle of the yoyo), synced to the whole timeline.
+    const half = tl.duration() / 2;
+    if (half > 0) {
+      tl.fromTo(
+        svg,
+        { filter: "blur(0px)" },
+        {
+          filter: "blur(0.2px)",
+          duration: half,
+          ease: "power1.inOut",
+          yoyo: true,
+          repeat: 1,
+        },
+        0,
+      );
+    }
+
+    return tl;
+  }
+
+  function setup(el: HTMLElement) {
+    if ((el as HTMLElement & { __caseIconTl?: unknown }).__caseIconTl) return;
+
+    const tl = buildTimeline(el);
+    if (!tl) return;
+    (el as HTMLElement & { __caseIconTl?: gsap.core.Timeline }).__caseIconTl =
+      tl;
+
+    if (el.dataset.animate === "true" && !prefersReducedMotion()) {
+      tl.play(0);
+    }
+
+    el.addEventListener("caseicon:toggle", (e) => {
+      const tl = (el as HTMLElement & { __caseIconTl?: gsap.core.Timeline })
+        .__caseIconTl;
+      if (!tl) return;
+      const shouldAnimate = (e as CustomEvent<{ animate: boolean }>).detail
+        .animate;
+      el.dataset.animate = shouldAnimate ? "true" : "false";
+      if (shouldAnimate && !prefersReducedMotion()) {
+        tl.restart();
+      } else {
+        tl.pause(0);
+      }
+    });
+  }
+
+  document
+    .querySelectorAll<HTMLElement>(".case-icon")
+    .forEach((el) => setup(el));
+</script>

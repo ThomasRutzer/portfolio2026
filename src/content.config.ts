@@ -7,8 +7,8 @@ const caseCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    oneLineDescription: z.string().optional(),
     date: z.string().transform((str) => new Date(str)),
+    by: z.string(),
     tags: z
       .array(
         z.object({
