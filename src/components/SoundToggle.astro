@@ -89,32 +89,36 @@ const { class: className } = Astro.props;
 </style>
 
 <script>
-  import { getSFX } from "@lib/sfx";
+  import { getSFX, bindHoverFocusSFX } from "@lib/sfx";
 
   const sfx = getSFX();
 
-  document
-    .querySelectorAll<HTMLButtonElement>("[data-sound-toggle]")
-    .forEach((button) => {
-      const label = button.querySelector<HTMLElement>(
-        "[data-sound-toggle-label]",
-      );
+  const buttons = document.querySelectorAll<HTMLButtonElement>(
+    "[data-sound-toggle]",
+  );
 
-      function render(enabled: boolean) {
-        button.setAttribute("aria-pressed", String(enabled));
-        if (label) label.textContent = enabled ? "Sound on" : "Sound off";
-      }
+  bindHoverFocusSFX(buttons);
 
-      render(sfx.isEnabled());
+  buttons.forEach((button) => {
+    const label = button.querySelector<HTMLElement>(
+      "[data-sound-toggle-label]",
+    );
 
-      button.addEventListener("click", () => {
-        const enabled = !sfx.isEnabled();
+    function render(enabled: boolean) {
+      button.setAttribute("aria-pressed", String(enabled));
+      if (label) label.textContent = enabled ? "Sound on" : "Sound off";
+    }
 
-        if (!enabled) sfx.play("toggle-off");
-        sfx.setEnabled(enabled);
-        if (enabled) sfx.play("toggle-on");
+    render(sfx.isEnabled());
 
-        render(enabled);
-      });
+    button.addEventListener("click", () => {
+      const enabled = !sfx.isEnabled();
+
+      if (!enabled) sfx.play("toggle-off");
+      sfx.setEnabled(enabled);
+      if (enabled) sfx.play("toggle-on");
+
+      render(enabled);
     });
+  });
 </script>

@@ -47,7 +47,7 @@ This is an Astro 6 portfolio site — no UI framework (React/Vue/etc.), only `.a
 **Interaction**
 
 - All interactive UI elements must be reachable via Keyboard
-- All interactive UI elements should at least be checked for sound effects
+- All interactive UI elements should at least be checked for sound effects, hover and focus should use the same Click anther one.
 
 ### Variants
 
