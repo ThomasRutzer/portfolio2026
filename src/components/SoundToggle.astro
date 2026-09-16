@@ -1,12 +1,8 @@
 ---
-interface Props {
-  class?: string;
-}
 
-const { class: className } = Astro.props;
 ---
 
-<button type="button" class={className} data-sound-toggle aria-pressed="true">
+<button type="button" data-sound-toggle aria-pressed="true">
   <svg class="wave" viewBox="0 0 40 16" aria-hidden="true">
     <path
       class="wave-path"
@@ -89,7 +85,7 @@ const { class: className } = Astro.props;
 </style>
 
 <script>
-  import { getSFX, bindHoverFocusSFX } from "@lib/sfx";
+  import { bindHoverFocusSFX, getSFX } from "@lib/sfx";
 
   const sfx = getSFX();
 
