@@ -4,18 +4,20 @@ import ClipboardButton from "@components/ClipboardButton.astro";
 interface Label {
   /** 0–1, position along the waveform width */
   position: number;
-  text: string;
+  /** Plain-text label, used for the popover body and the dot's accessible name. If omitted, derived from `html` by stripping tags. */
+  text?: string;
   href?: string;
   copy?: string;
+  /** Raw HTML for the popover body, e.g. text with inline links. Overrides text/href. */
+  html?: string;
 }
 
 interface Props {
   labels?: Label[];
-  variant?: "purple" | "yellow";
   aspectRatio?: number;
 }
 
-const { labels = [], variant = "purple", aspectRatio = 1 } = Astro.props;
+const { labels = [], aspectRatio = 1 } = Astro.props;
 
 // Fixed waveform data (sampled audio waveform). The SVG viewBox is 0 0 100 100.
 const W = 100;
@@ -129,7 +131,8 @@ const labelPoints = labels.map((l, i) => {
   const x = l.position * W;
   const y = yAtX(x);
   const id = `wf-label-${i}`;
-  return { ...l, x, y, id };
+  const text = l.text ?? l.html?.replace(/<[^>]+>/g, "").trim() ?? "";
+  return { ...l, x, y, id, text };
 });
 ---
 
@@ -159,7 +162,7 @@ const labelPoints = labels.map((l, i) => {
   </svg>
 
   {
-    labelPoints.map(({ x, y, id, text, href, copy }) => (
+    labelPoints.map(({ x, y, id, text, href, copy, html }) => (
       <>
         <button
           class="label-dot"
@@ -171,11 +174,13 @@ const labelPoints = labels.map((l, i) => {
         />
         <div
           id={id}
-          popover="manual"
+          popover="hint"
           class="label-popover"
           style={`--anchor: --${id}`}
         >
-          {copy ? (
+          {html ? (
+            <span set:html={html} />
+          ) : copy ? (
             <ClipboardButton label={text} copy={copy} />
           ) : href ? (
             <a href={href} autofocus>
@@ -195,10 +200,6 @@ const labelPoints = labels.map((l, i) => {
     position: relative;
     width: 100%;
     color: var(--color-p100);
-
-    &[data-variant="yellow"] {
-      color: var(--color-y100);
-    }
   }
 
   svg {
@@ -256,10 +257,9 @@ const labelPoints = labels.map((l, i) => {
     color: var(--color-ui);
     font-family: var(--font-main);
     font-size: var(--font-step-0);
-    border: 1px solid var(--color-muted);
-    border-radius: 4px;
-    white-space: nowrap;
-    width: max-content;
+    border: var(--border-stroke-width) solid var(--color-muted);
+    border-radius: var(--border-radius-s);
+    max-width: 24ch;
 
     opacity: 0;
     scale: 0.85;
@@ -281,7 +281,7 @@ const labelPoints = labels.map((l, i) => {
 
     a {
       color: inherit;
-      text-decoration: none;
+      text-decoration: underline;
       text-underline-offset: 2px;
 
       &:hover,
@@ -302,23 +302,32 @@ const labelPoints = labels.map((l, i) => {
 </style>
 
 <script>
-  import { getSFX } from "@lib/sfx";
+  import { bindHoverFocusSFX, getSFX } from "@lib/sfx";
 
   const sfx = getSFX();
-  const canHover = window.matchMedia("(hover: hover)").matches;
 
-  document
-    .querySelectorAll<HTMLButtonElement>(".waveform .label-dot")
-    .forEach((dot) => {
-      if (!canHover) return;
-      dot.addEventListener("pointerenter", () => sfx.play("hover"));
-    });
+  bindHoverFocusSFX(
+    document.querySelectorAll<HTMLButtonElement>(".waveform .label-dot"),
+  );
+
+  // "hint" popovers auto-close the previous one when a new one opens, firing
+  // its close toggle before the new open toggle (same task). Defer the close
+  // sound so a swap between dots only plays "open", not "close" then "open".
+  let openPopoverCount = 0;
 
   document
     .querySelectorAll<HTMLElement>(".waveform .label-popover")
     .forEach((popover) => {
       popover.addEventListener("toggle", (e) => {
-        sfx.play((e as ToggleEvent).newState === "open" ? "open" : "close");
+        if ((e as ToggleEvent).newState === "open") {
+          openPopoverCount++;
+          sfx.play("open");
+        } else {
+          openPopoverCount--;
+          queueMicrotask(() => {
+            if (openPopoverCount === 0) sfx.play("close");
+          });
+        }
       });
     });
 </script>

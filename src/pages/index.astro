@@ -1,34 +1,22 @@
 ---
 import About from "@components/About.astro";
-import CaseTabs from "@components/CaseTabs.astro";
+import Cases from "@components/Cases.astro";
 import FocusAreas from "@components/FocusAreas.astro";
 import Footer from "@components/Footer.astro";
 import Hero from "@components/Hero.astro";
 import SectionConnector from "@components/SectionConnector.astro";
-import SectionTitle from "@components/SectionTitle.astro";
 import Layout from "@layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
-
-const cases = await getCollection("cases");
 ---
 
-<Layout title="Home Page">
+<Layout>
   <Hero />
-
-  <section>
-    <div class="container">
-      <SectionTitle withSpacing={true}>Work</SectionTitle>
-    </div>
-    <CaseTabs cases={cases} />
-  </section>
+  <Cases />
 
   <div class="container-narrow">
     <SectionConnector withSpacing={false} />
   </div>
-  <section class="container">
     <FocusAreas />
-  </section>
 
-  <About connector={true} />
+  <About />
   <Footer />
 </Layout>

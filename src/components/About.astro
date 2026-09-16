@@ -15,7 +15,7 @@ import SectionTitle from "./SectionTitle.astro";
       tag="p"
       signalVariant="yellow"
       variant="light"
-      withSpacing={false}>About Me</SectionTitle
+      withSpacing={false}>Me</SectionTitle
     >
     <div class="rig">
       <figure>
@@ -27,15 +27,17 @@ import SectionTitle from "./SectionTitle.astro";
 
       <div class="wave">
         <Waveform
-          variant="yellow"
           aspectRatio={100 / 20}
           labels={[
             {
-              position: 0.25,
-              text: "Intro",
-              href: "https://thomasrutzer.dev",
+              position: 0.6,
+              html: 'A good read is <a href="https://www.thalia.de/shop/home/artikeldetails/A1068926167" target="_blank">Yellowface</a> from R. F. Kuang',
             },
-            { position: 0.4, text: "Drop", href: "https://thomasrutzer.dev" },
+
+            {
+              position: 0.2,
+              html: 'A good song is <a href="https://www.youtube.com/watch?v=XPVNKIqy_cw" target="_blank">Drag my body</a> from Hot Water Music',
+            },
             {
               position: 0.85,
               text: "hi@thomasrutzer.dev",
@@ -116,14 +118,6 @@ import SectionTitle from "./SectionTitle.astro";
         animation: none;
       }
     }
-  }
-
-  .wave {
-    min-width: 0;
-  }
-
-  .connector-attached {
-    margin-bottom: -7px;
   }
 
   @keyframes spin {

@@ -7,13 +7,13 @@ import SoundToggle from "./SoundToggle.astro";
 
 <header class="container">
   <Grid class="top-line" data-hero-top-line>
-    <GridItem span={{ base: 2, sm: 2, md: 2 }} align="start">
+    <GridItem span={{ base: 1, sm: 2, md: 2 }} align="start">
       <SectionTitle withSpacing={false}>Intro</SectionTitle>
     </GridItem>
-    <GridItem span={{ base: 2, sm: 2, md: 1 }} justify="center" align="start">
+    <GridItem span={{ base: 2, sm: 2, md: 2 }} justify="center" align="start">
       <SoundToggle />
     </GridItem>
-    <GridItem span={{ base: 2, sm: 2, md: 3 }} justify="end" align="start">
+    <GridItem span={{ base: 3, sm: 2, md: 2 }} justify="end" align="start">
       <div class="status-line">
         <p class="location" data-hero-location>50.93825° N, 6.89799° E</p>
       </div>
@@ -103,9 +103,6 @@ import SoundToggle from "./SoundToggle.astro";
   const heading = document.querySelector<HTMLElement>("[data-hero-title]");
   const nameEl = heading?.querySelector<HTMLElement>(".name");
   const highlightEl = heading?.querySelector<HTMLElement>(".highlight");
-  const locationEl = document.querySelector<HTMLElement>(
-    "[data-hero-location]",
-  );
 
   const mm = gsap.matchMedia();
 

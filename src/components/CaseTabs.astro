@@ -67,42 +67,49 @@ const { cases } = Astro.props;
         <Panel>
           <div class="case-panel-header">
             <CaseStatus status={c.data.status} />
-            <CaseYearBy date={new Date(c.data.date)} by={c.data.by} />
+            <CaseYearBy
+              startDate={new Date(c.data.startDate)}
+              endDate={c.data.endDate ? new Date(c.data.endDate) : undefined}
+              by={c.data.by}
+            />
           </div>
 
           <div class="case-panel">
-            <div class="case-description">
-              <h3>{c.data.title}</h3>
-              {c.data.description && <p>{c.data.description}</p>}
-              {c.data.tech && c.data.tech.length > 0 && (
+            <h3>{c.data.title}</h3>
+
+            {c.data.businessCase && (
+              <div class="metrics">
+                {c.data.businessCase.map((m) => (
+                  <RadialProgress
+                    label={m.label}
+                    value={m.value}
+                    progress={m.progress}
+                  />
+                ))}
+              </div>
+            )}
+
+            {c.data.tech && c.data.tech.length > 0 && (
+              <div class="tech-highlights">
                 <TechHighlights tech={c.data.tech} />
-              )}
+              </div>
+            )}
+
+            <div class="case-description">
+              <p>{c.data.description}</p>
             </div>
 
-            <aside aria-hidden="true" class="case-metrics">
-              {c.data.businessCase && (
-                <div class="radial-metrics">
-                  {c.data.businessCase.map((m) => (
-                    <RadialProgress
-                      label={m.label}
-                      value={m.value}
-                      progress={m.progress}
-                    />
-                  ))}
-                </div>
-              )}
-              {c.data.team && (
-                <div class="achievements">
-                  {c.data.team.map((a) => (
-                    <Progress
-                      label={a.label}
-                      value={a.value}
-                      progress={a.progress}
-                    />
-                  ))}
-                </div>
-              )}
-            </aside>
+            {c.data.team && (
+              <div class="achievements">
+                {c.data.team.map((a) => (
+                  <Progress
+                    label={a.label}
+                    value={a.value}
+                    progress={a.progress}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <div class="case-deco-footer" aria-hidden="true">
@@ -284,21 +291,34 @@ const { cases } = Astro.props;
     }
 
     .case-panel {
-      display: flex;
-      flex-direction: column-reverse;
-      gap: var(--space-xl);
+      display: grid;
+      grid-template-areas:
+        "title"
+        "desc"
+        "team"
+        "metrics"
+        "highlights";
+      column-gap: var(--space-xl);
+      row-gap: var(--space-m);
 
       @container tablist (min-width: 900px) {
-        flex-direction: row;
-        gap: var(--space-2xl);
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+          "title title"
+          "desc metrics"
+          "team  highlights";
+        column-gap: var(--space-2xl);
+        row-gap: var(--space-l);
       }
     }
 
     h3 {
+      grid-area: title;
       font-family: var(--font-title);
-      font-size: var(--font-step-2);
-      max-width: 8ch;
+      font-size: var(--font-step-3);
+      line-height: var(--font-step-3-line-height);
       color: var(--color-p100);
+      max-width: 16ch;
 
       &::first-line {
         color: var(--color-ui);
@@ -306,7 +326,7 @@ const { cases } = Astro.props;
     }
 
     .case-description {
-      flex: 1;
+      grid-area: desc;
       display: flex;
       flex-direction: column;
       gap: var(--space-m);
@@ -316,6 +336,11 @@ const { cases } = Astro.props;
       display: flex;
       flex-direction: column;
       gap: var(--space-s);
+      grid-area: team;
+    }
+
+    .tech-highlights {
+      grid-area: highlights;
     }
 
     .case-deco-footer {
@@ -323,18 +348,23 @@ const { cases } = Astro.props;
       justify-content: center;
     }
 
-    .case-metrics {
+    .metrics {
+      grid-area: metrics;
       display: flex;
-      flex: 1;
-      flex-direction: column;
       gap: var(--space-m);
+      justify-content: center;
+      text-align: center;
 
       @container tablist (min-width: 900px) {
         gap: var(--space-l);
       }
+
+      figure:nth-child(even) {
+        margin-top: calc(var(--space-m) * -1);
+      }
     }
 
-    .radial-metrics {
+    .radial-metrics {  
       display: flex;
       flex-wrap: nowrap;
       justify-content: center;
@@ -348,7 +378,7 @@ const { cases } = Astro.props;
 </style>
 
 <script>
-  import { getSFX } from "@lib/sfx";
+  import { bindHoverFocusSFX, getSFX } from "@lib/sfx";
   import { gsap } from "gsap";
   import { Draggable } from "gsap/Draggable";
 
@@ -374,6 +404,13 @@ const { cases } = Astro.props;
     ui.play("select");
     activate(index, { focus: true });
   }
+
+  let isDraggingCable = false;
+
+  bindHoverFocusSFX(tabs, {
+    skip: (tab) =>
+      isDraggingCable || tab.getAttribute("aria-selected") === "true",
+  });
 
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => activateByClickOrKey(tab));
@@ -564,6 +601,7 @@ const { cases } = Astro.props;
       type: "x,y",
       bounds: wrapper,
       onDragStart() {
+        isDraggingCable = true;
         gsap.killTweensOf(plug);
         ui.play("drag-start");
       },
@@ -573,6 +611,7 @@ const { cases } = Astro.props;
         setHover(nearestTabIndex(point));
       },
       onDragEnd() {
+        isDraggingCable = false;
         const point = { x: this.x, y: this.y };
         const target = nearestTabIndex(point);
         setHover(-1);

@@ -1,0 +1,14 @@
+---
+import { getCollection } from "astro:content";
+import CaseTabs from "./CaseTabs.astro";
+import SectionTitle from "./SectionTitle.astro";
+
+const cases = await getCollection("cases");
+---
+
+<section>
+  <div class="container">
+    <SectionTitle withSpacing={true}>Work</SectionTitle>
+  </div>
+  <CaseTabs cases={cases} />
+</section>
