@@ -1,7 +1,8 @@
 {
   "title": "Sonic Palette",
   "description": "A browser-based instrument builder that maps color values to synthesizer parameters — built for a Berlin sound-art collective. Designed around the constraint that every interaction must work without a mouse.",
-  "date": "2025-11-03",
+  "startDate": "2025-11-03",
+  "endDate": "2025-12-31",
   "by": "Self-commissioned",
   "tags": [
     { "label": "Audio Engineering", "type": "engineering" },

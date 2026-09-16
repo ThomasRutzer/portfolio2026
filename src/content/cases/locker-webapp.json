@@ -1,8 +1,8 @@
 {
   "title": "Locker Webapp",
   "description": "An on-device UI for parcel lockers, handling automated pickup and drop-off across first- and last-mile delivery for one of the worlds largest logistics companies. The webapp is designed to run on a variety of hardware platforms, including specific sensor connections",
-  "date": "2026-01-01",
-  "by": "SprintEins",
+  "startDate": "2026-01-01",
+  "by": { "label": "SprintEins", "url": "https://sprinteins.com/" },
   "tags": [],
   "icon": "twin",
   "status": "deployed",
@@ -13,7 +13,7 @@
       "progress": 80
     },
     {
-      "label": "hardware platforms supported",
+      "label": "Hardware platforms supported",
       "value": "2",
       "progress": 100
     },
@@ -32,8 +32,8 @@
       "progress": 89
     },
     {
-      "label": "Different hardware platforms supported",
-      "value": "2",
+      "label": "Cross-Scrum Teams",
+      "value": "4",
       "progress": 100
     }
   ],

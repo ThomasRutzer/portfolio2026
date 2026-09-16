@@ -1,15 +1,10 @@
 {
-  "title": "Example Case Study",
-  "description": "This is an example case study demonstrating the JSON data collection structure.",
-  "date": "2026-01-15",
-  "by": "SprintEins",
-  "tags": [
-    { "label": "Audio Engineering", "type": "engineering" },
-    { "label": "Creative Coding", "type": "engineering" },
-    { "label": "Web Audio API", "type": "architecture" },
-    { "label": "Keyboard-First", "type": "architecture" },
-    { "label": "Accessibility", "type": "architecture" }
-  ],
+  "title": "Lost & Found management",
+  "description": "For one of the largest logistics companies in the world, we designed and built a webapp to manage lost and found parcels.",
+  "startDate": "2026-06-22",
+  "endDate": "2025-12-31",
+  "by": { "label": "SprintEins", "url": "https://sprinteins.com/" },
+  "tags": [{ "label": "Audio Engineering", "type": "engineering" }],
   "icon": "eclipse",
   "image": "https://example.com/image.jpg",
   "status": "planned",
@@ -20,20 +15,14 @@
   ],
   "team": [
     {
-      "label": "Team of 2: 1 designer, 1 engineer",
-      "value": "2 people",
+      "label": "Frontend Team lead",
+      "value": "6 people",
       "progress": 100
-    },
-    {
-      "label": "Client kickoff workshop completed",
-      "value": "100%",
-      "progress": 100
-    },
-    {
-      "label": "Design handoff to engineering",
-      "value": "60%",
-      "progress": 60
     }
   ],
-  "tech": ["React", "TypeScript", "Web Audio API"]
+  "tech": [
+    "Experimental multi window interface with based on Window Management API",
+    "TypeScript",
+    "Web Audio API"
+  ]
 }

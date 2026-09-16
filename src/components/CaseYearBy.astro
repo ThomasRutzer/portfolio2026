@@ -1,15 +1,34 @@
 ---
+import type { CollectionEntry } from "astro:content";
+
+type By = CollectionEntry<"cases">["data"]["by"];
+
 interface Props {
-  date: Date;
-  by: string;
+  startDate: Date;
+  endDate?: Date;
+  by: By;
 }
 
-const { date, by } = Astro.props;
+const { startDate, endDate, by } = Astro.props;
+const byLabel = typeof by === "string" ? by : by.label;
+const byUrl = typeof by === "string" ? undefined : by.url;
 ---
 
 <div class="case-year-by">
-  <span class="case-year">{date.getFullYear()}</span>
-  <span class="case-by">{by}</span>
+  <span>
+    {endDate && <span> {endDate.getFullYear()} —</span>}
+    {startDate.getFullYear()}
+  </span>
+
+  {
+    byUrl ? (
+      <a class="case-by" href={byUrl} target="_blank" rel="noreferrer">
+        {byLabel}
+      </a>
+    ) : (
+      <span class="case-by">{byLabel}</span>
+    )
+  }
 </div>
 
 <style>
@@ -23,4 +42,28 @@ const { date, by } = Astro.props;
     align-items: flex-end;
     text-transform: uppercase;
   }
+
+  a.case-by {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-p100);
+    }
+  }
 </style>
+
+<script>
+  import { bindHoverFocusSFX, getSFX } from "@lib/sfx";
+
+  const sfx = getSFX();
+  const links = document.querySelectorAll<HTMLAnchorElement>(
+    ".case-year-by a.case-by",
+  );
+
+  bindHoverFocusSFX(links);
+  links.forEach((link) =>
+    link.addEventListener("click", () => sfx.play("open")),
+  );
+</script>

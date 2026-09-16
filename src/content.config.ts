@@ -7,8 +7,12 @@ const caseCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    date: z.string().transform((str) => new Date(str)),
-    by: z.string(),
+    startDate: z.string().transform((str) => new Date(str)),
+    endDate: z.string().transform((str) => new Date(str)).optional(),
+    by: z.union([
+      z.string(),
+      z.object({ label: z.string(), url: z.url() }),
+    ]),
     tags: z
       .array(
         z.object({
