@@ -1,4 +1,6 @@
 ---
+import ClipboardButton from "@components/ClipboardButton.astro";
+
 interface LinkItem {
   label: string;
   href?: string;
@@ -13,24 +15,25 @@ interface FooterColumn {
 interface Props {
   columns?: FooterColumn[];
 }
-
-const {
-  columns = [
-    {
-      title: "Connect",
-      items: [{ label: "hi@thomasrutzer.dev", copy: "hi@thomasrutzer.dev" }],
-    },
-  ],
-} = Astro.props as Props;
-
-const year = new Date().getFullYear();
 ---
 
 <footer class="container">
   <div class="bottom-bar">
     <span class="flow" aria-hidden="true">∿ ⟶ /\ ⟶ ⊙</span>
+    <nav aria-label="Contact and legal">
+      <ClipboardButton label="hi@thomasrutzer.dev" copy="hi@thomasrutzer.dev" />
+      <a href="/imprint">Imprint</a>
+    </nav>
   </div>
 </footer>
+
+<script>
+  import { bindHoverFocusSFX } from "@lib/sfx";
+
+  bindHoverFocusSFX(
+    document.querySelectorAll<HTMLElement>("footer nav a, footer nav button"),
+  );
+</script>
 
 <style>
   footer {
@@ -47,68 +50,28 @@ const year = new Date().getFullYear();
     grid-template-columns: repeat(3, auto);
     justify-content: space-between;
     gap: var(--space-l);
-
-    @media (max-width: 680px) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .title {
-    margin: 0 0 var(--space-s);
-    color: var(--color-foreground);
-    font-size: var(--font-step-0);
-    text-transform: uppercase;
-  }
-
-  ul {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2xs);
-  }
-
-  a,
-  .static,
-  :global(.clipboard-field) {
-    color: var(--color-ui);
-    font-weight: 600;
-  }
-
-  a {
-    text-decoration: none;
-
-    &:hover,
-    &:focus-visible {
-      color: var(--color-p100);
-    }
   }
 
   .bottom-bar {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
     gap: var(--space-m);
     border-top: 1px solid var(--color-muted);
-    justify-content: center;
     padding-top: var(--space-m);
 
     .flow {
+      grid-column: 2;
       color: var(--color-p200);
-      letter-spacing: 0.4em;
     }
 
-    p {
-      margin: 0;
-      color: var(--color-foreground);
+    nav {
+      display: flex;
+      align-items: center;
+      gap: var(--space-m);
+      justify-self: end;
       font-size: var(--font-step-0);
-      text-align: right;
-      line-height: 1.4;
-    }
-
-    svg {
-      width: 2rem;
-      height: 2rem;
-      flex-shrink: 0;
-      fill: var(--color-ui);
+      color: var(--color-foreground);
     }
   }
 </style>
