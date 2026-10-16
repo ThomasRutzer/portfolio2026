@@ -8,8 +8,8 @@
   "status": "deployed",
   "businessCase": [
     {
-      "label": "Lockers deployed",
-      "value": "101",
+      "label": "Lockers Fleet",
+      "value": "2000",
       "progress": 100
     },
     {
