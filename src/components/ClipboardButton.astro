@@ -7,7 +7,7 @@ interface Props {
 const { label, copy } = Astro.props;
 ---
 
-<button type="button" class="clipboard-field" data-copy={copy}>
+<button type="button" class="clipboard-field" data-copy={copy} title="Copy to clipboard">
   <span class="label">{label}</span>
   <span class="confirm">Copied to clipboard</span>
 </button>
@@ -28,7 +28,7 @@ const { label, copy } = Astro.props;
 
     &:hover,
     &:focus-visible {
-      color: var(--color-p100);
+      color: var(--color-p300);
     }
 
     span {
@@ -47,8 +47,8 @@ const { label, copy } = Astro.props;
 </style>
 
 <script>
-  import { gsap } from "gsap";
   import { getSFX } from "@lib/sfx";
+  import { gsap } from "gsap";
 
   const sfx = getSFX();
 
