@@ -4,7 +4,7 @@ import Layout from "@layouts/BaseLayout.astro";
 ---
 
 <Layout title="Imprint — thomas rutzer">
-  <main class="container-narrow">
+  <main class="container">
     <a href="/" data-back>⟵ Back to home</a>
 
     <h1>Imprint</h1>
@@ -96,18 +96,17 @@ import Layout from "@layouts/BaseLayout.astro";
     flex-direction: column;
     gap: var(--space-l);
     padding-block: var(--space-2xl) var(--space-l);
+    color: var(--color-foreground);
   }
 
   h1 {
     margin: 0;
     font-size: var(--font-step-4);
-    color: var(--color-foreground);
   }
 
   h2 {
     margin: 0 0 var(--space-2xs);
     font-size: var(--font-step-1);
-    color: var(--color-foreground);
   }
 
   p,
@@ -115,7 +114,6 @@ import Layout from "@layouts/BaseLayout.astro";
     max-width: 60ch;
     font-size: var(--font-step-1);
     font-style: normal;
-    line-height: 1.5;
   }
 
   a {
