@@ -26,6 +26,13 @@ import SoundToggle from "./SoundToggle.astro";
       class="highlight">unique interfaces & interactions</span
     > for the browser platform.
   </h1>
+  <p class="role">
+    I've shipped software for 10+ years now: E-commerce platforms in the
+    aviation industry. Educational installations on site. Internal
+    logistics systems that cannot fail. Since 2022 as a Senior Software Engineer
+    at SprintEins, where I spend my days finding the right rhythm between
+    structure and feel.
+  </p>
 </section>
 
 <noscript>
@@ -91,6 +98,12 @@ import SoundToggle from "./SoundToggle.astro";
     display: inline-block;
     white-space: nowrap;
   }
+
+  .role {
+    max-width: 60ch;
+    margin-top: var(--space-m);
+    color: var(--color-foreground);
+  }
 </style>
 
 <script>
@@ -111,7 +124,7 @@ import SoundToggle from "./SoundToggle.astro";
       gsap.from(topLine, {
         opacity: 0,
         filter: "blur(4px)",
-        duration: 1,
+        duration: 0.6,
         ease: "sine.out",
       });
     });
@@ -134,20 +147,8 @@ import SoundToggle from "./SoundToggle.astro";
     });
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {
-      gsap.set([nameSplit.chars, highlightSplit.chars], { opacity: 0 });
-
       gsap
-        .timeline({ defaults: { duration: 1.6, ease: "sine.inOut" } })
-        .to(
-          nameSplit.chars,
-          { opacity: 1, stagger: { each: 0.05, ease: "sine.inOut" } },
-          0,
-        )
-        .to(
-          highlightSplit.chars,
-          { opacity: 1, stagger: { each: 0.05, ease: "sine.inOut" } },
-          0.4,
-        )
+        .timeline({ defaults: { duration: 1.2, ease: "sine.inOut" } })
         .to(
           nameSplit.chars,
           {
@@ -156,9 +157,9 @@ import SoundToggle from "./SoundToggle.astro";
               filter: ["blur(0px)", "blur(2px)", "blur(0px)"],
               easeEach: "sine.inOut",
             },
-            stagger: { each: 0.05, ease: "sine.inOut" },
+            stagger: { each: 0.03, ease: "sine.inOut" },
           },
-          0.5,
+          0,
         )
         .to(
           highlightSplit.chars,
@@ -168,9 +169,9 @@ import SoundToggle from "./SoundToggle.astro";
               filter: ["blur(0px)", "blur(2px)", "blur(0px)"],
               easeEach: "sine.inOut",
             },
-            stagger: { each: 0.05, ease: "sine.inOut" },
+            stagger: { each: 0.03, ease: "sine.inOut" },
           },
-          0.9,
+          0.2,
         );
     });
 

@@ -1,17 +1,15 @@
 ---
-import Signal from "@components/Signal.astro";
 import CaseIcon from "@components/CaseIcon.astro";
 import CaseDeco from "@components/CaseDeco.astro";
-import CaseStats from "@components/CaseStats.astro";
 import CaseStatus from "@components/CaseStatus.astro";
-import CaseTags from "@components/CaseTags.astro";
 import Jack from "@components/Jack.astro";
 import Panel from "@components/Panel.astro";
 import type { CollectionEntry } from "astro:content";
 import RadialProgress from "./RadialProgress.astro";
 import Progress from "./Progress.astro";
 import TechHighlights from "./TechHighlights.astro";
-import CaseYearBy from "./CaseYearBy.astro";
+import CaseDuration from "./CaseDuration.astro";
+import CaseBy from "./CaseBy.astro";
 
 interface Props {
   cases: CollectionEntry<"cases">[];
@@ -21,7 +19,7 @@ const { cases } = Astro.props;
 ---
 
 <div>
-  <div role="tablist" aria-label="Case studies" class="container">
+  <div role="tablist" aria-label="Case studies">
     {
       cases.map((c, i) => (
         <button
@@ -47,9 +45,10 @@ const { cases } = Astro.props;
 
   <svg class="cable-layer" aria-hidden="true">
     <path class="cable"></path>
+    <path class="spark"></path>
   </svg>
 
-  <div class="container-narrow" aria-hidden="true">
+  <div aria-hidden="true">
     <div class="plug"></div>
 
     <Jack class="input-jack" />
@@ -62,15 +61,16 @@ const { cases } = Astro.props;
         id={`panel-${c.id}`}
         aria-labelledby={`tab-${c.id}`}
         hidden={i !== 0}
-        class="container-narrow"
       >
         <Panel>
           <div class="case-panel-header">
-            <CaseStatus status={c.data.status} />
-            <CaseYearBy
-              startDate={new Date(c.data.startDate)}
-              endDate={c.data.endDate ? new Date(c.data.endDate) : undefined}
-              by={c.data.by}
+            <div>
+              <CaseStatus status={c.data.status} />
+              <CaseBy by={c.data.by} />
+            </div>
+            <CaseDuration
+              startDate={c.data.startDate}
+              endDate={c.data.endDate}
             />
           </div>
 
@@ -91,6 +91,7 @@ const { cases } = Astro.props;
 
             {c.data.tech && c.data.tech.length > 0 && (
               <div class="tech-highlights">
+                <hr />
                 <TechHighlights tech={c.data.tech} />
               </div>
             )}
@@ -98,18 +99,6 @@ const { cases } = Astro.props;
             <div class="case-description">
               <p>{c.data.description}</p>
             </div>
-
-            {c.data.team && (
-              <div class="achievements">
-                {c.data.team.map((a) => (
-                  <Progress
-                    label={a.label}
-                    value={a.value}
-                    progress={a.progress}
-                  />
-                ))}
-              </div>
-            )}
           </div>
 
           <div class="case-deco-footer" aria-hidden="true">
@@ -130,7 +119,7 @@ const { cases } = Astro.props;
 
   [role="tablist"] {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
 
     @container tablist (min-width: 900px) {
       gap: var(--space-m);
@@ -172,7 +161,7 @@ const { cases } = Astro.props;
 
     header {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       gap: var(--space-xs);
       color: var(--color-foreground);
       align-items: center;
@@ -241,6 +230,17 @@ const { cases } = Astro.props;
     stroke-width: 4;
   }
 
+  .spark {
+    fill: none;
+    stroke: var(--color-y100);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;
+    filter: drop-shadow(0 0 3px var(--color-y100))
+      drop-shadow(0 0 6px var(--color-y100));
+  }
+
   .plug {
     position: absolute;
     top: 0;
@@ -265,20 +265,13 @@ const { cases } = Astro.props;
   :global(.input-jack) {
     position: relative;
     margin-top: var(--space-2xl-3xl);
-    margin-left: 75%;
+    margin-left: 50%;
     z-index: var(--z-dropdown);
     display: block;
   }
 
   section[role="tabpanel"] {
     margin-top: -7px;
-
-    @container tablist (max-width: 680px) {
-      max-width: min(
-        var(--container-max-narrow, 64rem),
-        calc(100% - var(--container-padding, 4%) * 2 + var(--space-m) * 2)
-      );
-    }
 
     &[hidden] {
       display: none;
@@ -287,7 +280,14 @@ const { cases } = Astro.props;
     .case-panel-header {
       display: flex;
       justify-content: space-between;
-      align--locationitems: center;
+      align-items: flex-start;
+      gap: var(--space-m);
+
+      & > div:first-child {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-m);
+      }
     }
 
     .case-panel {
@@ -306,7 +306,8 @@ const { cases } = Astro.props;
         grid-template-areas:
           "title title"
           "desc metrics"
-          "team  highlights";
+          "team metrics"
+          "highlights highlights";
         column-gap: var(--space-2xl);
         row-gap: var(--space-l);
       }
@@ -341,6 +342,16 @@ const { cases } = Astro.props;
 
     .tech-highlights {
       grid-area: highlights;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-m);
+
+      hr {
+        width: 100%;
+        margin: 0;
+        border: none;
+        border-top: var(--border-stroke-width) solid var(--color-muted);
+      }
     }
 
     .case-deco-footer {
@@ -364,7 +375,7 @@ const { cases } = Astro.props;
       }
     }
 
-    .radial-metrics {  
+    .radial-metrics {
       display: flex;
       flex-wrap: nowrap;
       justify-content: center;
@@ -394,6 +405,7 @@ const { cases } = Astro.props;
   const jacks = tabs.map((tab) => tab.querySelector<HTMLElement>(".jack"));
   const inputJack = wrapper?.querySelector<HTMLElement>(".input-jack") ?? null;
   const cable = wrapper?.querySelector<SVGPathElement>(".cable") ?? null;
+  const spark = wrapper?.querySelector<SVGPathElement>(".spark") ?? null;
   const plug = wrapper?.querySelector<HTMLElement>(".plug") ?? null;
 
   type Point = { x: number; y: number };
@@ -477,7 +489,7 @@ const { cases } = Astro.props;
   // Patch cable: a purely visual/interactive layer on top of the activation
   // logic above. Click and keyboard activation always work on their own;
   // dragging the plug is an equivalent, additional trigger for `activate`.
-  if (wrapper && inputJack && cable && plug && jacks.every(Boolean)) {
+  if (wrapper && inputJack && cable && spark && plug && jacks.every(Boolean)) {
     const prefersReducedMotion = () =>
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -586,14 +598,80 @@ const { cases } = Astro.props;
 
     let hoveredIndex = -1;
 
+    // Jagged, hand-drawn-looking arc standing in for an electric spark
+    // jumping the remaining gap between the dragged plug and a reachable
+    // (but not yet connected) jack.
+    function lightningPath(start: Point, end: Point): string {
+      const segments = 6;
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
+      const len = Math.hypot(dx, dy) || 1;
+      const nx = -dy / len;
+      const ny = dx / len;
+
+      const points: Point[] = [];
+      for (let i = 0; i <= segments; i++) {
+        const t = i / segments;
+        let x = start.x + dx * t;
+        let y = start.y + dy * t;
+        if (i > 0 && i < segments) {
+          const offset = (Math.random() - 0.5) * 16;
+          x += nx * offset;
+          y += ny * offset;
+        }
+        points.push({ x, y });
+      }
+
+      return points
+        .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
+        .join(" ");
+    }
+
+    let sparkTimer: ReturnType<typeof setInterval> | null = null;
+    let sparkSoundTimer: ReturnType<typeof setInterval> | null = null;
+    let lastDragPoint: Point | null = null;
+
+    function stopSpark() {
+      if (sparkTimer !== null) {
+        clearInterval(sparkTimer);
+        sparkTimer = null;
+      }
+      if (sparkSoundTimer !== null) {
+        clearInterval(sparkSoundTimer);
+        sparkSoundTimer = null;
+      }
+      gsap.to(spark, { opacity: 0, duration: 0.15, overwrite: true });
+    }
+
+    function startSpark(index: number) {
+      if (prefersReducedMotion()) return;
+      gsap.to(spark, { opacity: 1, duration: 0.1, overwrite: true });
+      const draw = () => {
+        if (!lastDragPoint) return;
+        spark!.setAttribute(
+          "d",
+          lightningPath(lastDragPoint, jackPoint(index)),
+        );
+      };
+      draw();
+      sparkTimer = setInterval(draw, 55);
+
+      // Crackle loop while the arc is reaching for the jack, separate from
+      // the faster visual redraw so it doesn't turn into noise.
+      ui.play("connecting");
+      sparkSoundTimer = setInterval(() => ui.play("connecting"), 220);
+    }
+
     function setHover(index: number) {
       if (index === hoveredIndex) return;
       if (hoveredIndex >= 0)
         tabs[hoveredIndex].classList.remove("cable-target");
       hoveredIndex = index;
+      stopSpark();
       if (hoveredIndex >= 0) {
         tabs[hoveredIndex].classList.add("cable-target");
         ui.play("snap");
+        startSpark(hoveredIndex);
       }
     }
 
@@ -607,6 +685,7 @@ const { cases } = Astro.props;
       },
       onDrag() {
         const point = { x: this.x, y: this.y };
+        lastDragPoint = point;
         drawCableTo(point);
         setHover(nearestTabIndex(point));
       },
@@ -615,6 +694,7 @@ const { cases } = Astro.props;
         const point = { x: this.x, y: this.y };
         const target = nearestTabIndex(point);
         setHover(-1);
+        lastDragPoint = null;
 
         if (target >= 0 && target !== activeIndex) {
           ui.play("connect");

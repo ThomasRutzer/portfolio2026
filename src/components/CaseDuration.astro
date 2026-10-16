@@ -1,0 +1,26 @@
+---
+import Progress from "./Progress.astro";
+
+interface Props {
+  startDate: Date;
+  endDate?: Date;
+}
+
+const { startDate, endDate } = Astro.props;
+const from = String(startDate.getFullYear());
+const till = endDate ? String(endDate.getFullYear()) : undefined;
+const ariaLabel = till
+  ? `Project duration ${from} to ${till}`
+  : `Project since ${from}`;
+---
+
+<div>
+  <Progress label={from} value={till} progress={100} ariaLabel={ariaLabel} />
+</div>
+
+<style>
+  div {
+    width: clamp(9rem, 40%, 16rem);
+    font-variant-numeric: tabular-nums;
+  }
+</style>

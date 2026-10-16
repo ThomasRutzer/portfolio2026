@@ -6,6 +6,14 @@ import Image from "astro/components/Image.astro";
 import image from "./../assets/images/thomasrutzer.png";
 import SectionConnector from "./SectionConnector.astro";
 import SectionTitle from "./SectionTitle.astro";
+
+const birth = new Date("1988-12-24");
+const now = new Date();
+const hadBirthday =
+  now.getMonth() > birth.getMonth() ||
+  (now.getMonth() === birth.getMonth() && now.getDate() >= birth.getDate());
+const lifeYears =
+  now.getFullYear() - birth.getFullYear() - (hadBirthday ? 0 : 1);
 ---
 
 <section class="about container">
@@ -41,13 +49,17 @@ import SectionTitle from "./SectionTitle.astro";
             {
               position: 0.85,
               text: "hi@thomasrutzer.dev",
-              copy: "hi@thomasrutzer.dev",
+              html: 'A good recipe is <a href="https://www.eat-this.org/loaded-hummus-mit-geroestetem-blumenkohl/" target="_blank">Loaded Hummus mit geröstetem Blumenkohl</a> from Eat This!',
             },
           ]}
         />
       </div>
 
-      <Progress label="Experience" value="12 years" progress={28} />
+      <Progress
+        label="Life Experience"
+        value={`${lifeYears} years`}
+        progress={28}
+      />
     </div>
   </Panel>
 </section>

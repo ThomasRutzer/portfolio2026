@@ -1,11 +1,12 @@
 ---
 interface Props {
   label: string;
-  value: string;
+  value?: string;
   progress: number; // 0–100
+  ariaLabel?: string;
 }
 
-const { label, value, progress } = Astro.props;
+const { label, value, progress, ariaLabel = label } = Astro.props;
 const clamped = Math.max(0, Math.min(100, progress));
 
 const BAR_COUNT = 40;
@@ -16,7 +17,7 @@ const bars = Array.from({ length: BAR_COUNT }, (_, i) => ({ active: i < activeCo
 <figure>
   <figcaption>
     <span class="label">{label}</span>
-    <span class="value">{value}</span>
+    {value && <span class="value">{value}</span>}
   </figcaption>
   <div
     class="bars"
@@ -24,7 +25,7 @@ const bars = Array.from({ length: BAR_COUNT }, (_, i) => ({ active: i < activeCo
     aria-valuenow={clamped}
     aria-valuemin={0}
     aria-valuemax={100}
-    aria-label={label}
+    aria-label={ariaLabel}
   >
     {
       bars.map((bar, i) => (

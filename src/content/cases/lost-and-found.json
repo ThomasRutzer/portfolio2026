@@ -1,17 +1,25 @@
 {
   "title": "Lost & Found management",
-  "description": "For one of the largest logistics companies in the world, we designed and built a webapp to manage lost and found parcels.",
-  "startDate": "2026-06-22",
+  "description": "For one of the largest logistics companies in the world, we designed and built a system to manage lost and found parcels. This includes route optimization algorithms to calculate efficient picking routes and minimize employee travel within the warehouse. I lead the web frontend engineering team.",
+  "startDate": "2022-06-01",
   "endDate": "2025-12-31",
   "by": { "label": "SprintEins", "url": "https://sprinteins.com/" },
   "tags": [{ "label": "Audio Engineering", "type": "engineering" }],
   "icon": "eclipse",
   "image": "https://example.com/image.jpg",
-  "status": "planned",
+  "status": "deployed",
   "businessCase": [
-    { "label": "Projected Cost Savings", "value": "35%", "progress": 35 },
-    { "label": "Stakeholder Buy-in", "value": "61%", "progress": 61 },
-    { "label": "Budget Utilised", "value": "47%", "progress": 47 }
+    {
+      "label": "handled items per year",
+      "value": "10+ Million",
+      "progress": 90
+    },
+    { "label": "active users per year", "value": "1.800", "progress": 100 },
+    {
+      "label": "legacy solutions replaced",
+      "value": "3",
+      "progress": 100
+    }
   ],
   "team": [
     {
@@ -21,8 +29,8 @@
     }
   ],
   "tech": [
-    "Experimental multi window interface with based on Window Management API",
-    "TypeScript",
-    "Web Audio API"
+    "Experimental multi window interface based on Window Management API",
+    "Early adoption of user-facing AI capabilities within the corporation, designed to accelerate and streamline the search for lost items. ",
+    "Implemented keyboard-driven interactions and customizable shortcuts to streamline workflows and improve user efficiency."
   ]
 }

@@ -10,14 +10,14 @@
     {
       "label": "Lockers deployed",
       "value": "101",
-      "progress": 80
+      "progress": 100
     },
     {
       "label": "Hardware platforms supported",
       "value": "2",
-      "progress": 100
+      "progress": 50
     },
-    { "label": "Months until live", "value": "4", "progress": 100 }
+    { "label": "Months until live", "value": "4", "progress": 40 }
   ],
   "stats": [
     { "value": "100+", "label": "Lockers live" },
@@ -38,10 +38,10 @@
     }
   ],
   "tech": [
-    "Custom harness skills to model xState from Figma flows",
-    "Safe transactions with partial offline support with service workers and background sync",
-    "Planned updates while continuous operation without interrupting customers",
-    "Hosted in the cloud",
-    "Otel-conform tracing and metrics with Prometheus and visible in Grafana"
+    "Custom copilot harness to generate xState from Figma flows",
+    "Safe transactions with background sync",
+    "Planned updates of the UI without interrupting customers",
+    "Partial offline support with service worker",
+    "Otel-conform tracing and metrics displayed in Grafana"
   ]
 }

@@ -8,7 +8,15 @@ const cases = await getCollection("cases");
 
 <section>
   <div class="container">
-    <SectionTitle withSpacing={true}>Work</SectionTitle>
+    <SectionTitle withSpacing={true}>Latest Work</SectionTitle>
   </div>
-  <CaseTabs cases={cases} />
+  <div class="container-narrow">
+    <CaseTabs cases={cases} />
+  </div>
 </section>
+
+<style>
+  section {
+    margin-top: var(--space-2xl);
+  }
+</style>
