@@ -70,6 +70,8 @@
   /* Effects */
   --border-radius-s: 4px;
   --border-stroke-width: 1px;
+
+  --copy-text-indent: 4ch;
 }
 
 body {
@@ -99,15 +101,6 @@ a {
 }
 
 .container {
-  max-width: min(
-    var(--container-max, 82.5rem),
-    (100% - var(--container-padding, 4%) * 2)
-  );
-  margin-inline: auto;
-  width: 100%;
-}
-
-.container-narrow {
   max-width: min(
     var(--container-max-narrow, 64rem),
     (100% - var(--container-padding, 4%) * 2)

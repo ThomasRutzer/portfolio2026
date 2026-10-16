@@ -96,9 +96,7 @@ const { cases } = Astro.props;
               </div>
             )}
 
-            <div class="case-description">
-              <p>{c.data.description}</p>
-            </div>
+            <p class="case-description">{c.data.description}</p>
           </div>
 
           <div class="case-deco-footer" aria-hidden="true">
@@ -331,6 +329,7 @@ const { cases } = Astro.props;
       display: flex;
       flex-direction: column;
       gap: var(--space-m);
+      text-indent: var(--copy-text-indent);
     }
 
     .achievements {

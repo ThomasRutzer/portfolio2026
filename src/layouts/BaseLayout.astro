@@ -4,22 +4,50 @@ import "../site.css";
 
 interface Props {
   title?: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
 }
 
 const {
   title = "thomas rutzer — expert in crafting unique interfaces & interactions for the browser platform",
+  description = "Hej, I'm Thomas. I architect & engineer unique interfaces & interactions for the browser platform — 12+ years shipping software",
+  image = "/seo-default.jpg",
+  imageAlt = "hay I'm thomas",
 } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const imageUrl = new URL(image, Astro.site);
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="thomas rutzer" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={imageAlt} />
     <Font cssVariable="--font-main" />
     <Font cssVariable="--font-title" preload />
   </head>
@@ -27,3 +55,58 @@ const {
     <slot />
   </body>
 </html>
+
+<script>
+  import { gsap } from "gsap";
+
+  const frames = new Map<number, string>();
+
+  const frame = (opacity: number) => {
+    const key = Math.round(opacity * 20) / 20;
+    let href = frames.get(key);
+    if (!href) {
+      const core = (0.35 + 0.65 * key).toFixed(2);
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><radialGradient id="g"><stop offset="0.5" stop-color="#a29cf9" stop-opacity="0.35"/><stop offset="1" stop-color="#a29cf9" stop-opacity="0"/></radialGradient></defs><circle cx="16" cy="16" r="16" fill="url(#g)" opacity="${key}"/><circle cx="16" cy="16" r="8" fill="#6a64a8" opacity="${core}"/></svg>`;
+      href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+      frames.set(key, href);
+    }
+    return href;
+  };
+
+  const link = document.querySelector<HTMLLinkElement>(
+    'link[rel="icon"][type="image/svg+xml"]',
+  );
+  if (link) {
+    const staticHref = link.href;
+
+    gsap.matchMedia().add("(prefers-reduced-motion: no-preference)", () => {
+      const pulse = { opacity: 0.2 };
+
+      gsap.to(pulse, {
+        keyframes: {
+          "8%": { opacity: 1 },
+          "14%": { opacity: 0.25 },
+          "22%": { opacity: 0.75 },
+          "30%": { opacity: 0.15 },
+          "55%": { opacity: 0.9 },
+          "62%": { opacity: 0.2 },
+          "75%": { opacity: 0.55 },
+          "85%": { opacity: 0.15 },
+          "100%": { opacity: 0.2 },
+          easeEach: "sine.inOut",
+        },
+        duration: 4.3,
+        ease: "none",
+        repeat: -1,
+        onUpdate: () => {
+          const href = frame(pulse.opacity);
+          if (link.href !== href) link.href = href;
+        },
+      });
+
+      return () => {
+        link.href = staticHref;
+      };
+    });
+  }
+</script>
