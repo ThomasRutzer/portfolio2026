@@ -4,7 +4,7 @@ import { defineConfig, fontProviders } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
   site: "https://thomasrutzer.github.io",
-  base:"portfolio2026",
+  base: "portfolio2026",
   fonts: [
     {
       provider: fontProviders.local(),
