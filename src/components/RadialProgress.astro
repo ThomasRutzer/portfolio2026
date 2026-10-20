@@ -70,6 +70,11 @@ const activeCount = Math.round((clamped / 100) * spokes.length);
     flex: 1;
 
     & svg {
+      flex: none;
+      max-width: 100%;
+      height: auto;
+      aspect-ratio: 1;
+      box-sizing: content-box;
       border-radius: 50%;
       border: 2px solid var(--color-bg);
     }
@@ -118,7 +123,7 @@ const activeCount = Math.round((clamped / 100) * spokes.length);
   @media (prefers-reduced-motion: reduce) {
     .spoke.active {
       animation: none;
-      r: 2
+      r: 2;
       fill: var(--color-y100);
     }
   }

@@ -14,13 +14,16 @@ const ariaLabel = till
   : `Project since ${from}`;
 ---
 
-<div>
+<div class:list={{ ongoing: !till }}>
   <Progress label={from} value={till} progress={100} ariaLabel={ariaLabel} />
 </div>
 
 <style>
   div {
-    width: clamp(9rem, 40%, 16rem);
     font-variant-numeric: tabular-nums;
+  }
+
+  .ongoing :global(figcaption) {
+    justify-content: flex-end;
   }
 </style>

@@ -83,11 +83,18 @@ const { icon, animate = false } = Astro.props;
 <style>
   .case-icon {
     display: inline-flex;
+    flex: none;
   }
 
   svg {
-    width: 36px;
-    height: 36px;
+    flex: none;
+    width: 24px;
+    height: 24px;
+
+    @container tablist (min-width: 900px) {
+      width: 36px;
+      height: 36px;
+    }
   }
 
   svg circle,
