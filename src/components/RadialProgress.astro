@@ -41,18 +41,16 @@ const activeCount = Math.round((clamped / 100) * spokes.length);
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
   >
-    <g clip-path="url(#radial-progress-clip)">
-      {
-        spokes.map(({ cx, cy }, i) => (
-          <circle
-            class:list={["spoke", i < activeCount && "active"]}
-            cx={cx}
-            cy={cy}
-            style={`--i: ${i}`}
-          />
-        ))
-      }
-    </g>
+    {
+      spokes.map(({ cx, cy }, i) => (
+        <circle
+          class:list={["spoke", i < activeCount && "active"]}
+          cx={cx}
+          cy={cy}
+          style={`--i: ${i}`}
+        />
+      ))
+    }
   </svg>
   <figcaption>
     <span class="value">{value}</span>
