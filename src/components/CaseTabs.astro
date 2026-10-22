@@ -260,6 +260,13 @@ const { cases } = Astro.props;
     opacity: 0;
     z-index: 3;
 
+    &::before {
+      content: "";
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+    }
+
     &:active {
       cursor: grabbing;
     }
