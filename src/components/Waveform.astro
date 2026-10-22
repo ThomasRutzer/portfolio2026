@@ -1,13 +1,10 @@
 ---
-import ClipboardButton from "@components/ClipboardButton.astro";
-
 interface Label {
   /** 0–1, position along the waveform width */
   position: number;
   /** Plain-text label, used for the popover body and the dot's accessible name. If omitted, derived from `html` by stripping tags. */
   text?: string;
   href?: string;
-  copy?: string;
   /** Raw HTML for the popover body, e.g. text with inline links. Overrides text/href. */
   html?: string;
 }
@@ -162,7 +159,7 @@ const labelPoints = labels.map((l, i) => {
   </svg>
 
   {
-    labelPoints.map(({ x, y, id, text, href, copy, html }) => (
+    labelPoints.map(({ x, y, id, text, href, html }) => (
       <>
         <button
           class="label-dot"
@@ -180,8 +177,6 @@ const labelPoints = labels.map((l, i) => {
         >
           {html ? (
             <span set:html={html} />
-          ) : copy ? (
-            <ClipboardButton label={text} copy={copy} />
           ) : href ? (
             <a href={href} autofocus>
               {text}
@@ -283,15 +278,6 @@ const labelPoints = labels.map((l, i) => {
       color: inherit;
       text-decoration: underline;
       text-underline-offset: 2px;
-
-      &:hover,
-      &:focus-visible {
-        color: var(--color-p100);
-      }
-    }
-
-    :global(.clipboard-field) {
-      color: inherit;
 
       &:hover,
       &:focus-visible {
