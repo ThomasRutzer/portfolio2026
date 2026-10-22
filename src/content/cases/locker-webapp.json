@@ -1,6 +1,6 @@
 {
   "title": "Locker Webapp",
-  "description": "An on-device UI for parcel locker located throughout Germany. The lockers are open to multiple providers, which means that various international logistics companies and their systems are integrated. With the UI displayed on the internal device screen, customers and couriers can handle automated pickup and drop-off across first- and last-mile delivery. The webapp is designed to run on a variety of hardware platforms of different manufacturers and connecting and processing their sensor data.",
+  "description": "An on-device UI for parcel lockers, located throughout Germany. The lockers are open to multiple providers, which means that various international logistics companies and their systems are integrated. With the UI displayed on the internal screen, customers and couriers can handle automated pickup and drop-off across first- and last-mile delivery. The webapp is designed to run on a variety of hardware platforms of different manufacturers and connecting and processing their sensor data.",
   "startDate": "2026-01-01",
   "by": { "label": "SprintEins", "url": "https://sprinteins.com/" },
   "tags": [],
