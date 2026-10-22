@@ -424,8 +424,7 @@ const { cases } = Astro.props;
   function activateByClickOrKey(tab: HTMLElement) {
     const index = tabs.indexOf(tab);
     if (index < 0 || index === activeIndex) return;
-    ui.play("select");
-    activate(index, { focus: true });
+    activate(index, { focus: true, spark: true });
   }
 
   let isDraggingCable = false;
@@ -465,7 +464,7 @@ const { cases } = Astro.props;
   // (e.g. if markup is missing) so `activate` is always safe to call.
   let settleCableTo: (
     index: number,
-    opts?: { ease?: string },
+    opts?: { ease?: string; spark?: boolean },
   ) => void = () => {};
 
   function setIconAnimating(tab: HTMLElement, animate: boolean) {
@@ -475,7 +474,10 @@ const { cases } = Astro.props;
     );
   }
 
-  function activate(index: number, opts: { focus: boolean; ease?: string }) {
+  function activate(
+    index: number,
+    opts: { focus: boolean; ease?: string; spark?: boolean },
+  ) {
     const changed = index !== activeIndex;
 
     tabs.forEach((t, i) => {
@@ -494,7 +496,7 @@ const { cases } = Astro.props;
 
     activeIndex = index;
     if (changed && opts.focus) tabs[index].focus();
-    settleCableTo(index, { ease: opts.ease });
+    settleCableTo(index, { ease: opts.ease, spark: opts.spark });
   }
 
   // Patch cable: a purely visual/interactive layer on top of the activation
@@ -540,13 +542,23 @@ const { cases } = Astro.props;
       drawCableTo(point);
     }
 
-    settleCableTo = function (index: number, opts: { ease?: string } = {}) {
+    // Fraction of the settle tween after which a click/keyboard switch
+    // starts arcing to the target jack, mirroring the spark seen on drag.
+    const SETTLE_SPARK_START = 0.35;
+
+    settleCableTo = function (
+      index: number,
+      opts: { ease?: string; spark?: boolean } = {},
+    ) {
       const target = jackPoint(index);
       const targetD = cablePath(inputPoint(), target);
+
+      endSettleSpark();
 
       if (prefersReducedMotion()) {
         gsap.set(plug, { x: target.x, y: target.y, opacity: 1 });
         cable!.setAttribute("d", targetD);
+        if (opts.spark) ui.play("connect");
         return;
       }
 
@@ -563,12 +575,38 @@ const { cases } = Astro.props;
         opacity: 1,
         duration: 0.45,
         ease,
+        overwrite: "auto",
+        onUpdate() {
+          if (!opts.spark) return;
+          const progress = this.progress();
+          // Skip the final frame: the plug sits on the jack, so the arc
+          // would collapse to zero length right before fading out.
+          if (progress >= 1) return;
+          sparkOrigin = {
+            x: gsap.getProperty(plug, "x") as number,
+            y: gsap.getProperty(plug, "y") as number,
+          };
+          if (settleSparkIndex < 0 && progress >= SETTLE_SPARK_START) {
+            settleSparkIndex = index;
+            tabs[index].classList.add("cable-target");
+            ui.play("snap");
+            startSpark(index);
+          } else if (settleSparkIndex >= 0) {
+            drawSpark(index);
+          }
+        },
+        onComplete() {
+          if (settleSparkIndex < 0) return;
+          endSettleSpark();
+          ui.play("connect");
+        },
       });
 
       gsap.to(cable, {
         attr: { d: targetD },
         duration: 0.45,
         ease,
+        overwrite: "auto",
       });
     };
 
@@ -640,7 +678,23 @@ const { cases } = Astro.props;
 
     let sparkTimer: ReturnType<typeof setInterval> | null = null;
     let sparkSound: ReturnType<typeof ui.play> = null;
-    let lastDragPoint: Point | null = null;
+    // Where the spark arcs from: the dragged plug, or the plug mid-settle.
+    let sparkOrigin: Point | null = null;
+    // Tab currently sparking from a click/keyboard settle, or -1.
+    let settleSparkIndex = -1;
+
+    function endSettleSpark() {
+      if (settleSparkIndex < 0) return;
+      tabs[settleSparkIndex].classList.remove("cable-target");
+      settleSparkIndex = -1;
+      sparkOrigin = null;
+      stopSpark();
+    }
+
+    function drawSpark(index: number) {
+      if (!sparkOrigin) return;
+      spark!.setAttribute("d", lightningPath(sparkOrigin, jackPoint(index)));
+    }
 
     function stopSpark() {
       if (sparkTimer !== null) {
@@ -655,13 +709,7 @@ const { cases } = Astro.props;
     function startSpark(index: number) {
       if (prefersReducedMotion()) return;
       gsap.to(spark, { opacity: 1, duration: 0.1, overwrite: true });
-      const draw = () => {
-        if (!lastDragPoint) return;
-        spark!.setAttribute(
-          "d",
-          lightningPath(lastDragPoint, jackPoint(index)),
-        );
-      };
+      const draw = () => drawSpark(index);
       draw();
       sparkTimer = setInterval(draw, 55);
 
@@ -689,11 +737,12 @@ const { cases } = Astro.props;
       onDragStart() {
         isDraggingCable = true;
         gsap.killTweensOf(plug);
+        endSettleSpark();
         ui.play("drag-start");
       },
       onDrag() {
         const point = { x: this.x, y: this.y };
-        lastDragPoint = point;
+        sparkOrigin = point;
         drawCableTo(point);
         setHover(nearestTabIndex(point));
       },
@@ -702,7 +751,7 @@ const { cases } = Astro.props;
         const point = { x: this.x, y: this.y };
         const target = nearestTabIndex(point);
         setHover(-1);
-        lastDragPoint = null;
+        sparkOrigin = null;
 
         if (target >= 0 && target !== activeIndex) {
           ui.play("connect");
