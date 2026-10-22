@@ -9,7 +9,7 @@
       stroke-linecap="round"
       stroke-linejoin="round"></path>
   </svg>
-  <span class="label" data-sound-toggle-label>Sound on</span>
+  <span class="label" data-sound-toggle-label>SFx on</span>
 </button>
 
 <style>
@@ -93,7 +93,7 @@
 
     function render(enabled: boolean) {
       button.setAttribute("aria-pressed", String(enabled));
-      if (label) label.textContent = enabled ? "Sound on" : "Sound off";
+      if (label) label.textContent = enabled ? "SFx on" : "SFx off";
     }
 
     render(sfx.isEnabled());
