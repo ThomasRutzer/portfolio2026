@@ -165,24 +165,6 @@ const { icon, animate = false } = Astro.props;
       return null;
     }
 
-    // Minimal motion blur: a soft blur pulse timed to the fastest part of
-    // the motion (the middle of the yoyo), synced to the whole timeline.
-    const half = tl.duration() / 2;
-    if (half > 0) {
-      tl.fromTo(
-        svg,
-        { filter: "blur(0px)" },
-        {
-          filter: "blur(0.2px)",
-          duration: half,
-          ease: "power1.inOut",
-          yoyo: true,
-          repeat: 1,
-        },
-        0,
-      );
-    }
-
     return tl;
   }
 
