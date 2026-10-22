@@ -68,16 +68,18 @@ const lifeYears =
   .about {
     margin-top: var(--space-l);
     color: var(--color-ui);
+    container-type: inline-size;
+    container-name: about;
   }
 
   .rig {
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: 1fr;
     align-items: center;
     gap: var(--space-l);
 
-    @media (max-width: 900px) {
-      grid-template-columns: 1fr;
+    @container about (min-width: 900px) {
+      grid-template-columns: auto auto auto;
     }
   }
 
@@ -86,6 +88,11 @@ const lifeYears =
     flex-direction: column;
     align-items: center;
     gap: var(--space-xs);
+    margin: 0 var(--space-m);
+
+    @container about (min-width: 900px) {
+      margin: 0;
+    }
 
     .portrait {
       position: relative;
